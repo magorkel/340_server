@@ -3,9 +3,12 @@ package edu.byu.cs.tweeter.model.net;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.*;
 
 import edu.byu.cs.tweeter.BuildConfig;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
+import edu.byu.cs.tweeter.model.domain.Status;
+import edu.byu.cs.tweeter.model.domain.Story;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.service.request.FollowingRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowerRequest;
@@ -45,6 +48,10 @@ public class ServerFacade {
     private final User user18 = new User("Isabel", "Isaacson", FEMALE_IMAGE_URL);
     private final User user19 = new User("Justin", "Jones", MALE_IMAGE_URL);
     private final User user20 = new User("Jill", "Johnson", FEMALE_IMAGE_URL);
+    private Status stat1 = new Status("hello content1", user1, "Wednesday, September 22, 2021");
+    private Status stat2 = new Status("hello content1", user1, "Thursday, December 4, 2021");
+    private Story story = new Story(stat1, stat2, "@billyjoe");//make a list of story objects we can iterate through
+    //private User user21 = new User("Billy", "BobJoe", "@billybobjoe", MALE_IMAGE_URL);
 
     /**
      * Performs a login and if successful, returns the logged in user and an auth token. The current
@@ -145,7 +152,7 @@ public class ServerFacade {
                 user19, user20);
     }
 
-    //Follower starts here
+    //Follower starts here----------------------------------------------------------------------------------------------------------------------------
     public FollowerResponse getFollowers(FollowerRequest request) {
 
         // Used in place of assert statements because Android does not support them
@@ -177,7 +184,7 @@ public class ServerFacade {
         return new FollowerResponse(responseFollowers, hasMorePages);
     }
 
-    private int getFollowersStartingIndex(String lastFollowerAlias, List<User> allFollowers) {
+    private int getFollowersStartingIndex(String lastFollowerAlias, List<User> allFollowers) {//getstatusstartingindex     string alias is a status
 
         int followersIndex = 0;
 
@@ -203,25 +210,59 @@ public class ServerFacade {
                 user19, user20);
     }
 
-    public StoryResponse getStory(StoryRequest request)
-    {
+    //Story starts here---------------------------------------------------------------------------------------------------------------------
+    public StoryResponse getStory(StoryRequest request) {
+
         // Used in place of assert statements because Android does not support them
         if(BuildConfig.DEBUG) {
+            if(request.getLimit() < 0) {
+                throw new AssertionError();
+            }
+
             if(request.getUsername() == null) {
                 throw new AssertionError();
             }
         }
 
-        User user = getDummyUser();
-        //User user = getDummyUser(request.getUsername());//do we only have one user in here?
+        List<Status> allStatuses = getDummyStatuses();
+        List<Status> responseStatuses = new ArrayList<>(request.getLimit());
 
         boolean hasMorePages = false;
 
-        return new StoryResponse(user, hasMorePages);
+        if(request.getLimit() > 0) {
+            int statusIndex = getStatusStartingIndex(request.getLastStatus(), allStatuses);
+
+            for(int limitCounter = 0; statusIndex < allStatuses.size() && limitCounter < request.getLimit(); statusIndex++, limitCounter++) {
+                responseStatuses.add(allStatuses.get(statusIndex));
+            }
+
+            hasMorePages = statusIndex < allStatuses.size();
+        }
+
+        return new StoryResponse(responseStatuses, hasMorePages);
     }
 
-    public User getDummyUser()
-    {
-        return user1;
+    private int getStatusStartingIndex(Status lastStatus, List<Status> allStatuses) {//getstatusstartingindex     string alias is a status
+
+        int followersIndex = 0;
+
+        if(lastStatus != null) {
+            // This is a paged request for something after the first page. Find the first item
+            // we should return
+            for (int i = 0; i < allStatuses.size(); i++) {
+                if(lastStatus.equals(allStatuses.get(i).getUserAlias())) {
+                    // We found the index of the last item returned last time. Increment to get
+                    // to the first one we should return
+                    followersIndex = i + 1;
+                    break;
+                }
+            }
+        }
+
+        return followersIndex;
+    }
+
+    List<Status> getDummyStatuses() {
+        return Arrays.asList(stat1, stat2);
     }
 }

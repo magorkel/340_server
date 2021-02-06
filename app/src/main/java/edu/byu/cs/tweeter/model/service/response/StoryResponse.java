@@ -1,21 +1,23 @@
 package edu.byu.cs.tweeter.model.service.response;
 
-import edu.byu.cs.tweeter.model.domain.User;
+import java.util.List;
+
+import edu.byu.cs.tweeter.model.domain.Status;
 
 public class StoryResponse extends PagedResponse
 {
-    private User user;
+    private List<Status> posts;
 
     public StoryResponse(String message)
     {
         super(false, message, false);
     }
 
-    public StoryResponse(User user, boolean hasMorePages)
+    public StoryResponse(List<Status> posts, boolean hasMorePages)
     {
         super(true, hasMorePages);
-        this.user = user;
+        this.posts = posts;
     }
 
-    public User getStory() { return user; }
+    public List<Status> getStory() { return posts; }
 }
