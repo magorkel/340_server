@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
+import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.view.util.ImageUtils;
 
@@ -27,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String CURRENT_USER_KEY = "CurrentUser";
     public static final String AUTH_TOKEN_KEY = "AuthTokenKey";
+    //public static final String CURRENT_STATUS_KEY = "CurrentStatus";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +37,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         User user = (User) getIntent().getSerializableExtra(CURRENT_USER_KEY);
+        //FIXME: Delete me
+        //Status status = (Status) getIntent().getSerializableExtra(CURRENT_STATUS_KEY);
         if(user == null) {
             throw new RuntimeException("User not passed to activity");
         }
 
         AuthToken authToken = (AuthToken) getIntent().getSerializableExtra(AUTH_TOKEN_KEY);
 
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), user, authToken);
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), user, authToken); //, status);
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);

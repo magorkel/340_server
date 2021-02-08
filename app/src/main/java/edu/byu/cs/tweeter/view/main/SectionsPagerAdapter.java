@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
+import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.view.main.follower.FollowerFragment;
 import edu.byu.cs.tweeter.view.main.following.FollowingFragment;
@@ -30,12 +31,14 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
     private final Context mContext;
     private final User user;
     private final AuthToken authToken;
+    //private final Status status;
 
-    public SectionsPagerAdapter(Context context, FragmentManager fm, User user, AuthToken authToken) {
+    public SectionsPagerAdapter(Context context, FragmentManager fm, User user, AuthToken authToken) { //, Status status) {
         super(fm);
         mContext = context;
         this.user = user;
         this.authToken = authToken;
+        //this.status = new Status("FJLKDJSL", user, "Nonyah 10:00");
     }
 
     @Override
@@ -47,7 +50,7 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
             return FollowerFragment.newInstance(user, authToken);
         }
         else if (position == STORY_FRAGMENT_POSITION) {
-            return StoryFragment.newInstance(user, authToken);
+            return StoryFragment.newInstance(user, authToken);//User
         }
         else {
             return PlaceholderFragment.newInstance(position + 1);

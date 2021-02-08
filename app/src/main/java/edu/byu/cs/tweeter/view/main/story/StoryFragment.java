@@ -33,8 +33,8 @@ import edu.byu.cs.tweeter.view.util.ImageUtils;
 public class StoryFragment extends Fragment implements StoryPresenter.View
 {
     private static final String LOG_TAG = "StoryFragment";
-    //private static final String USER_KEY = "UserKey";
-    private static final String STATUS_KEY = "StatusKey";
+    private static final String USER_KEY = "UserKey";
+    //private static final String STATUS_KEY = "StatusKey";
     private static final String AUTH_TOKEN_KEY = "AuthTokenKey";
 
     private static final int LOADING_DATA_VIEW = 0;
@@ -42,8 +42,8 @@ public class StoryFragment extends Fragment implements StoryPresenter.View
 
     private static final int PAGE_SIZE = 10;
 
-    //private User user;//
-    private Status status;
+    private User user;//
+    //private Status status;
     private AuthToken authToken;//
     private StoryPresenter presenter;
 
@@ -53,16 +53,16 @@ public class StoryFragment extends Fragment implements StoryPresenter.View
      * Creates an instance of the fragment and places the user and auth token in an arguments
      * bundle assigned to the fragment.
      *
-     * @param status the logged in user.
+     * @param user the logged in user.
      * @param authToken the auth token for this user's session.
      * @return the fragment.
      */
-    public static StoryFragment newInstance(/*User user*/Status status, AuthToken authToken) {
+    public static StoryFragment newInstance(User user/*Status status*/, AuthToken authToken) {
         StoryFragment fragment = new StoryFragment();
 
         Bundle args = new Bundle(2);
-        //args.putSerializable(USER_KEY, user);
-        args.putSerializable(STATUS_KEY, status);
+        args.putSerializable(USER_KEY, user);
+        //args.putSerializable(STATUS_KEY, status);
         args.putSerializable(AUTH_TOKEN_KEY, authToken);
 
         fragment.setArguments(args);
@@ -75,8 +75,8 @@ public class StoryFragment extends Fragment implements StoryPresenter.View
         View view = inflater.inflate(R.layout.fragment_story, container, false);
 
         //noinspection ConstantConditions
-        //user = (User) getArguments().getSerializable(USER_KEY);
-        status = (Status) getArguments().getSerializable(STATUS_KEY);
+        user = (User) getArguments().getSerializable(USER_KEY);
+        //status = (Status) getArguments().getSerializable(STATUS_KEY);
         authToken = (AuthToken) getArguments().getSerializable(AUTH_TOKEN_KEY);
 
         presenter = new StoryPresenter(this);
@@ -99,9 +99,11 @@ public class StoryFragment extends Fragment implements StoryPresenter.View
      */
     private class StoryHolder extends RecyclerView.ViewHolder {
 
-        private final ImageView userImage;
+        private final ImageView userImage; //avatar
         private final TextView userAlias;
-        private final TextView userName;
+        private final TextView userName; //fullname?
+        private final TextView content;
+        private final TextView postTime;
 
         //avatar, alias, full name, content(mentions and URLS clickable), time
         //need to make onclick listeners in holder for mentions and URLs, in FAQ
@@ -115,11 +117,15 @@ public class StoryFragment extends Fragment implements StoryPresenter.View
             super(itemView);
 
             if(viewType == ITEM_VIEW) {
-                userImage = itemView.findViewById(R.id.userImage);
+                userImage = itemView.findViewById(R.id.userImage); //On this view box, add this...
                 userAlias = itemView.findViewById(R.id.userAlias);
                 userName = itemView.findViewById(R.id.userName);
+                content = itemView.findViewById(R.id.content);
+                postTime = itemView.findViewById(R.id.postTime);
 
-                itemView.setOnClickListener(new View.OnClickListener() {
+                //need to make onclick listeners in holder for mentions and URLs, in FAQ
+                //Android clickable span
+                itemView.setOnClickListener(new View.OnClickListener() {//FIXME: Only click mentions and URLS, so may not need this.
                     @Override
                     public void onClick(View view) {
                         Toast.makeText(getContext(), "You selected '" + userName.getText() + "'.", Toast.LENGTH_SHORT).show();
@@ -129,18 +135,26 @@ public class StoryFragment extends Fragment implements StoryPresenter.View
                 userImage = null;
                 userAlias = null;
                 userName = null;
+                content = null;
+                postTime = null;
             }
         }
 
         /**
          * Binds the user's data to the view.
          *
-         * @param user the user.
+         * @param status the user.
          */
-        void bindUser(User user) {
-            userImage.setImageDrawable(ImageUtils.drawableFromByteArray(user.getImageBytes()));
-            userAlias.setText(user.getAlias());
-            userName.setText(user.getName());
+        void bindStatus(Status status) {
+           // userImage.setImageDrawable(ImageUtils.drawableFromByteArray(status.getUser().getImageBytes()));
+            // FIXME: THROWING ERROR HERE ABOUT accessing null array
+            //NOTE: Where is the user inside of Status being set? ... (It seems the byte array is null)
+            //NOTE: It is being set in the ServerFacade... but the image byte array is null. This is the same for the ones set for follower/ee,
+            //but when they reach this point in execution, they have their image byte array filled ... where does this happen?
+            userAlias.setText(status.getUserAlias());
+            userName.setText(status.getUser().getName());
+            content.setText(status.getContent());
+            postTime.setText(status.getTime());
         }
     }
 
@@ -149,7 +163,7 @@ public class StoryFragment extends Fragment implements StoryPresenter.View
      */
     private class StoryRecyclerViewAdapter extends RecyclerView.Adapter<StoryHolder> implements GetStoryTask.Observer {
 
-        private final List<User> users = new ArrayList<>();
+        private final List<Status> statuses = new ArrayList<>();
 
         private edu.byu.cs.tweeter.model.domain.Status lastStory;
 
@@ -167,34 +181,34 @@ public class StoryFragment extends Fragment implements StoryPresenter.View
          * Adds new users to the list from which the RecyclerView retrieves the users it displays
          * and notifies the RecyclerView that items have been added.
          *
-         * @param newUsers the users to add.
+         * @param newStats the users to add.
          */
-        void addItems(List<User> newUsers) {//adding status not user
-            int startInsertPosition = users.size();
-            users.addAll(newUsers);
-            this.notifyItemRangeInserted(startInsertPosition, newUsers.size());
+        void addItems(List<Status> newStats) {//adding status not user
+            int startInsertPosition = statuses.size();
+            statuses.addAll(newStats);
+            this.notifyItemRangeInserted(startInsertPosition, newStats.size());
         }
 
         /**
          * Adds a single user to the list from which the RecyclerView retrieves the users it
          * displays and notifies the RecyclerView that an item has been added.
          *
-         * @param user the user to add.
+         * @param status the user to add.
          */
-        void addItem(User user) {//same as above
-            users.add(user);
-            this.notifyItemInserted(users.size() - 1);
+        void addItem(Status status) {//same as above
+            statuses.add(status);
+            this.notifyItemInserted(statuses.size() - 1);
         }
 
         /**
          * Removes a user from the list from which the RecyclerView retrieves the users it displays
          * and notifies the RecyclerView that an item has been removed.
          *
-         * @param user the user to remove.
+         * @param status the user to remove.
          */
-        void removeItem(User user) {//change to be able to delete a status
-            int position = users.indexOf(user);
-            users.remove(position);
+        void removeItem(Status status) {//change to be able to delete a status
+            int position = statuses.indexOf(status);
+            statuses.remove(position);
             this.notifyItemRemoved(position);
         }
 
@@ -213,10 +227,10 @@ public class StoryFragment extends Fragment implements StoryPresenter.View
             View view;
 
             if(viewType == LOADING_DATA_VIEW) {
-                view =layoutInflater.inflate(R.layout.loading_row, parent, false);
+                view = layoutInflater.inflate(R.layout.loading_row, parent, false);
 
             } else {
-                view = layoutInflater.inflate(R.layout.user_row, parent, false);//FIXME change to status
+                view = layoutInflater.inflate(R.layout.status_row, parent, false);//FIXME change to status
             }
 
             return new StoryHolder(view, viewType);
@@ -233,7 +247,7 @@ public class StoryFragment extends Fragment implements StoryPresenter.View
         @Override
         public void onBindViewHolder(@NonNull StoryHolder storyHolder, int position) {
             if(!isLoading) {
-                storyHolder.bindUser(users.get(position));//FIXME to status
+                storyHolder.bindStatus(statuses.get(position));
             }
         }
 
@@ -243,7 +257,7 @@ public class StoryFragment extends Fragment implements StoryPresenter.View
          */
         @Override
         public int getItemCount() {
-            return users.size();//FIXME status
+            return statuses.size();
         }
 
         /**
@@ -255,7 +269,7 @@ public class StoryFragment extends Fragment implements StoryPresenter.View
          */
         @Override
         public int getItemViewType(int position) {
-            return (position == users.size() - 1 && isLoading) ? LOADING_DATA_VIEW : ITEM_VIEW;//FIXME status
+            return (position == statuses.size() - 1 && isLoading) ? LOADING_DATA_VIEW : ITEM_VIEW;
         }
 
         /**
@@ -267,7 +281,8 @@ public class StoryFragment extends Fragment implements StoryPresenter.View
             addLoadingFooter();
 
             GetStoryTask getStoryTask = new GetStoryTask(presenter, this);
-            StoryRequest request = new StoryRequest(status.getTag(), PAGE_SIZE);//FIXME add back the second status from request, explain indexing thing
+            StoryRequest request = new StoryRequest(user.getAlias(), PAGE_SIZE, (lastStory == null ? null : lastStory));
+            //FIXME: Correct?
             getStoryTask.execute(request);
         }
 
@@ -286,7 +301,7 @@ public class StoryFragment extends Fragment implements StoryPresenter.View
 
             isLoading = false;
             removeLoadingFooter();
-            storyRecyclerViewAdapter.addItems(story);//FIXME what?
+            storyRecyclerViewAdapter.addItems(story);
         }
 
         /**
@@ -306,7 +321,7 @@ public class StoryFragment extends Fragment implements StoryPresenter.View
          * loading footer view) at the bottom of the list.
          */
         private void addLoadingFooter() {//FIXME status
-            addItem(new User("Dummy", "User", ""));
+            addItem(new Status("Dummy", new User(), "")); //FIXME: Need to instantiate User.
         }
 
         /**
@@ -314,7 +329,7 @@ public class StoryFragment extends Fragment implements StoryPresenter.View
          * the loading footer at the bottom of the list.
          */
         private void removeLoadingFooter() {//FIXME status
-            removeItem(users.get(users.size() - 1));
+            removeItem(statuses.get(statuses.size() - 1));
         }
     }
 

@@ -49,8 +49,10 @@ public class ServerFacade {
     private final User user19 = new User("Justin", "Jones", MALE_IMAGE_URL);
     private final User user20 = new User("Jill", "Johnson", FEMALE_IMAGE_URL);
     private Status stat1 = new Status("hello content1", user1, "Wednesday, September 22, 2021");
-    private Status stat2 = new Status("hello content1", user1, "Thursday, December 4, 2021");
-    private Story story = new Story(stat1, stat2, "@billyjoe");//make a list of story objects we can iterate through
+    private Status stat2 = new Status("hello content2", user1, "Thursday, December 4, 2021");
+    private Status stat3 = new Status("hello content3", user1, "Wednesday, June 22, 2021");
+    private Status stat4 = new Status("hello content4", user1, "Thursday, January 4, 2021");
+    //private Story story = new Story(stat1, stat2, "@billyjoe");//make a list of story objects we can iterate through
     //private User user21 = new User("Billy", "BobJoe", "@billybobjoe", MALE_IMAGE_URL);
 
     /**
@@ -263,6 +265,6 @@ public class ServerFacade {
     }
 
     List<Status> getDummyStatuses() {
-        return Arrays.asList(stat1, stat2);
+        return Arrays.asList(stat1, stat2, stat3, stat4);
     }
 }
