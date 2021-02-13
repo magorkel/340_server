@@ -7,6 +7,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -118,10 +122,26 @@ public class StoryFragment extends Fragment implements StoryPresenter.View
 
             if(viewType == ITEM_VIEW) {
                 userImage = itemView.findViewById(R.id.userImage); //On this view box, add this...
-                userAlias = itemView.findViewById(R.id.userAlias);
+                userAlias = itemView.findViewById(R.id.userAlias); //FIXME: This is an arraylist?
                 userName = itemView.findViewById(R.id.userName);
                 content = itemView.findViewById(R.id.content);
                 postTime = itemView.findViewById(R.id.postTime);
+
+                TextView textView = itemView.findViewById(R.id.userAlias);
+                String text = "" + userAlias.getText();
+                SpannableString ss = new SpannableString(text);
+                ClickableSpan span1 = new ClickableSpan() {
+                    @Override
+                    public void onClick(@NonNull View widget) {
+                        Toast.makeText(getContext(), "CLICKED ONE", Toast.LENGTH_SHORT).show();
+
+                    }
+                };
+                ss.setSpan(span1, 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                textView.setText(ss);
+                textView.setMovementMethod(LinkMovementMethod.getInstance());
+
+
 
                 //need to make onclick listeners in holder for mentions and URLs, in FAQ
                 //Android clickable span

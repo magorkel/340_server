@@ -1,12 +1,13 @@
 package edu.byu.cs.tweeter.model.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Status implements Comparable<Status>, Serializable
 {
-    private String[] tag;//name of person referenced inside of post
-    private String[] URL;//link to post
+    private ArrayList<String> tag;//name of person referenced inside of post FIXME: These are supposed to be arrays?
+    private ArrayList<String> URL;//link to post
     private String content;
     private User user;//alias and avatar/pic
     private String time;//need time date object
@@ -15,13 +16,29 @@ public class Status implements Comparable<Status>, Serializable
         this.content = content;//parse out tag and URL if they exist
         this.user = user;
         this.time = time;
-
-        this.tag = null;
-        this.URL = null;
+        this.tag = new ArrayList<>();
+        this.URL = new ArrayList<>();
+        parseContent(content);
     }
 
-    public String[] getTag() { return tag; }
-    public String[] getURL() { return URL; }
+    public void parseContent(String content) {
+        String delims = "[ ]+";
+        String[] tokens = content.split(delims);
+
+        if (content != null) {
+            for (int i = 0; i < tokens.length; i++) {
+                if (tokens[i].charAt(0) == '@') {
+                    //Append "Post Mention: " or "URL: " - or have it do it when we call display on this information in other class.
+                    this.tag.add(tokens[i]);
+                } else {//FIXME: Make it so this parses for URLS's as well.
+                    this.URL.add(tokens[i]);
+                }
+            }
+        }
+    }
+
+    public ArrayList<String> getTag() { return tag; }
+    public ArrayList<String> getURL() { return URL; }
     public String getContent() { return content; }
     public User getUser() { return user; }
     public String getUserAlias() { return user.getAlias(); }
