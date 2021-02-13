@@ -7,6 +7,7 @@ import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.ServerFacade;
 import edu.byu.cs.tweeter.model.service.request.StoryRequest;
+import edu.byu.cs.tweeter.model.service.response.FollowerResponse;
 import edu.byu.cs.tweeter.model.service.response.StoryResponse;
 import edu.byu.cs.tweeter.util.ByteArrayUtils;
 
@@ -16,18 +17,19 @@ public class StoryService
     {
         StoryResponse response = getServerFacade().getStory(request);
 
-        /*if(response.isSuccess()) {
+        if(response.isSuccess()) {
             loadImages(response);
-        }*/
+        }
 
         return response;
     }
 
-    /*private void loadImages(StoryResponse response) throws IOException {
-        List<Status> posts = response.getStory();
-        //byte [] bytes = ByteArrayUtils.bytesFromUrl(user.getImageUrl());
-        user.setImageBytes(bytes);
-    }*/
+    private void loadImages(StoryResponse response) throws IOException {
+        for(Status status : response.getStory()) {
+            byte [] bytes = ByteArrayUtils.bytesFromUrl(status.getUser().getImageUrl());
+            status.getUser().setImageBytes(bytes);
+        }
+    }
 
     ServerFacade getServerFacade() {
         return new ServerFacade();

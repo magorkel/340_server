@@ -146,11 +146,7 @@ public class StoryFragment extends Fragment implements StoryPresenter.View
          * @param status the user.
          */
         void bindStatus(Status status) {
-           // userImage.setImageDrawable(ImageUtils.drawableFromByteArray(status.getUser().getImageBytes()));
-            // FIXME: THROWING ERROR HERE ABOUT accessing null array
-            //NOTE: Where is the user inside of Status being set? ... (It seems the byte array is null)
-            //NOTE: It is being set in the ServerFacade... but the image byte array is null. This is the same for the ones set for follower/ee,
-            //but when they reach this point in execution, they have their image byte array filled ... where does this happen?
+            userImage.setImageDrawable(ImageUtils.drawableFromByteArray(status.getUser().getImageBytes()));
             userAlias.setText(status.getUserAlias());
             userName.setText(status.getUser().getName());
             content.setText(status.getContent());
