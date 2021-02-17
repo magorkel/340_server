@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -122,35 +125,10 @@ public class StoryFragment extends Fragment implements StoryPresenter.View
 
             if(viewType == ITEM_VIEW) {
                 userImage = itemView.findViewById(R.id.userImage); //On this view box, add this...
-                userAlias = itemView.findViewById(R.id.userAlias); //FIXME: This is an arraylist?
+                userAlias = itemView.findViewById(R.id.userAlias);
                 userName = itemView.findViewById(R.id.userName);
                 content = itemView.findViewById(R.id.content);
                 postTime = itemView.findViewById(R.id.postTime);
-
-                TextView textView = itemView.findViewById(R.id.userAlias);
-                String text = "" + userAlias.getText();
-                SpannableString ss = new SpannableString(text);
-                ClickableSpan span1 = new ClickableSpan() {
-                    @Override
-                    public void onClick(@NonNull View widget) {
-                        Toast.makeText(getContext(), "CLICKED ONE", Toast.LENGTH_SHORT).show();
-
-                    }
-                };
-                ss.setSpan(span1, 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                textView.setText(ss);
-                textView.setMovementMethod(LinkMovementMethod.getInstance());
-
-
-
-                //need to make onclick listeners in holder for mentions and URLs, in FAQ
-                //Android clickable span
-                itemView.setOnClickListener(new View.OnClickListener() {//FIXME: Only click mentions and URLS, so may not need this.
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(getContext(), "You selected '" + userName.getText() + "'.", Toast.LENGTH_SHORT).show();
-                    }
-                });
             } else {
                 userImage = null;
                 userAlias = null;
@@ -169,8 +147,97 @@ public class StoryFragment extends Fragment implements StoryPresenter.View
             userImage.setImageDrawable(ImageUtils.drawableFromByteArray(status.getUser().getImageBytes()));
             userAlias.setText(status.getUserAlias());
             userName.setText(status.getUser().getName());
-            content.setText(status.getContent());
+            content.setText(stringBuilder(status.getContent()));
             postTime.setText(status.getTime());
+        }
+
+        private SpannableStringBuilder stringBuilder(String string)
+        {
+            SpannableStringBuilder builder = new SpannableStringBuilder(string);
+
+            for (int i = 0; i < string.length(); i++)
+            {
+                try
+                {
+                    if (string.charAt(i) == '@')
+                    {
+                        int size = 0;
+                        for (int j = i; j < string.length(); j++)
+                        {
+                            if (string.charAt(j) == ' ')
+                            {
+                                size = j;
+                                break;
+                            }
+                        }
+                        ///listener
+                        int finalI = i;
+                        int finalSize = size;
+                        ClickableSpan firstwordClick = new ClickableSpan()
+                        {
+                            @Override
+                            public void onClick(View widget)
+                            {
+                                //take us to that person
+                                String alias = string.substring(finalI, finalI + finalSize);
+                                //send a request to find user in database
+                                //make a link to users page
+                                Toast.makeText(getContext(), alias, Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void updateDrawState(TextPaint ds)
+                            {
+                                super.updateDrawState(ds);
+                                ds.setUnderlineText(true);
+                            }
+                        };
+                        builder.setSpan(firstwordClick, i, i + size, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        //when done, then i+=j
+                        i += size;
+                    }
+                    else if (string.charAt(i) == 'h' && string.charAt(i + 1) == 't' && string.charAt(i + 2) == 't' && string.charAt(i + 3) == 'p')
+                    {
+                        int size = 0;
+                        for (int j = i; j < string.length(); j++)
+                        {
+                            if (string.charAt(j) == ' ' || j == (string.length() - 1))
+                            {
+                                size = j;
+                                break;
+                            }
+                        }
+                        int finalI = i;
+                        int finalSize = size;
+                        ClickableSpan firstwordClick = new ClickableSpan()
+                        {
+                            @Override
+                            public void onClick(View widget)
+                            {
+                                String URL = string.substring(finalI, finalI + finalSize);
+                                //make a link to the interweb
+                                Toast.makeText(getContext(), URL, Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void updateDrawState(TextPaint ds)
+                            {
+                                super.updateDrawState(ds);
+                                ds.setUnderlineText(true);
+                            }
+                        };
+                        builder.setSpan(firstwordClick, i, i + size, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        i += size;
+                    }
+                } catch (ArrayIndexOutOfBoundsException e)
+                {
+                    continue;
+                }
+            }
+            content.setLinksClickable(true);
+            content.setMovementMethod(LinkMovementMethod.getInstance());
+            content.setText(builder, TextView.BufferType.SPANNABLE);
+            return builder;
         }
     }
 

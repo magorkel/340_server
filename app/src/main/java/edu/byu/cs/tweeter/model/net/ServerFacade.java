@@ -50,7 +50,7 @@ public class ServerFacade {
     private final User user18 = new User("Isabel", "Isaacson", FEMALE_IMAGE_URL);
     private final User user19 = new User("Justin", "Jones", MALE_IMAGE_URL);
     private final User user20 = new User("Jill", "Johnson", FEMALE_IMAGE_URL);
-    private Status stat1 = new Status("@hello content1", user1, "Wednesday, September 22, 2021");
+    private Status stat1 = new Status("@hello @sup content1 https://google.com @hi ", user1, "Wednesday, September 22, 2021");
     private Status stat2 = new Status("hello content2", user1, "Thursday, December 4, 2021");
     private Status stat3 = new Status("hello content3", user1, "Wednesday, June 22, 2021");
     private Status stat4 = new Status("hello content4", user1, "Thursday, January 4, 2021");
