@@ -6,8 +6,8 @@ import java.util.List;
 
 public class Status implements Comparable<Status>, Serializable
 {
-    private ArrayList<String> tag;//name of person referenced inside of post FIXME: These are supposed to be arrays?
-    private ArrayList<String> URL;//link to post
+    //private ArrayList<String> tag;//name of person referenced inside of post FIXME: These are supposed to be arrays?
+    //private ArrayList<String> URL;//link to post
     private String content;
     private User user;//alias and avatar/pic
     private String time;//need time date object
@@ -16,12 +16,12 @@ public class Status implements Comparable<Status>, Serializable
         this.content = content;//parse out tag and URL if they exist
         this.user = user;
         this.time = time;
-        this.tag = new ArrayList<>();
-        this.URL = new ArrayList<>();
-        parseContent(content);
+        //this.tag = new ArrayList<>();
+        //this.URL = new ArrayList<>();
+        //parseContent(content);
     }
 
-    public void parseContent(String content) {
+    /*public void parseContent(String content) {
         String delims = "[ ]+";
         String[] tokens = content.split(delims);
 
@@ -35,10 +35,10 @@ public class Status implements Comparable<Status>, Serializable
                 }
             }
         }
-    }
+    }*/
 
-    public ArrayList<String> getTag() { return tag; }
-    public ArrayList<String> getURL() { return URL; }
+    //public ArrayList<String> getTag() { return tag; }
+    //public ArrayList<String> getURL() { return URL; }
     public String getContent() { return content; }
     public User getUser() { return user; }
     public String getUserAlias() { return user.getAlias(); }

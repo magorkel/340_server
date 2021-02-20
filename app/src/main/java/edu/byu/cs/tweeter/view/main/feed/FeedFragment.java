@@ -1,6 +1,11 @@
 package edu.byu.cs.tweeter.view.main.feed;
 
 import android.os.Bundle;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -120,15 +125,6 @@ public class FeedFragment extends Fragment implements FeedPresenter.View {
                 userName = itemView.findViewById(R.id.userName);
                 content = itemView.findViewById(R.id.content);
                 postTime = itemView.findViewById(R.id.postTime);
-
-                //need to make onclick listeners in holder for mentions and URLs, in FAQ
-                //Android clickable span
-                itemView.setOnClickListener(new View.OnClickListener() {//FIXME: Only click mentions and URLS, so may not need this.
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(getContext(), "You selected '" + userName.getText() + "'.", Toast.LENGTH_SHORT).show();
-                    }
-                });
             } else {
                 userImage = null;
                 userAlias = null;
@@ -147,8 +143,98 @@ public class FeedFragment extends Fragment implements FeedPresenter.View {
             userImage.setImageDrawable(ImageUtils.drawableFromByteArray(status.getUser().getImageBytes()));
             userAlias.setText(status.getUserAlias());
             userName.setText(status.getUser().getName());
-            content.setText(status.getContent());
+            content.setText(stringBuilder(status.getContent()));
             postTime.setText(status.getTime());
+        }
+
+        private SpannableStringBuilder stringBuilder(String string)
+        {
+            SpannableStringBuilder builder = new SpannableStringBuilder(string);
+
+            for (int i = 0; i < string.length(); i++)
+            {
+                try
+                {
+                    if (string.charAt(i) == '@')
+                    {
+                        int size = 0;
+                        for (int j = i; j < string.length(); j++)
+                        {
+                            size++;
+                            if (string.charAt(j) == ' ')
+                            {
+                                size -= 1;
+                                break;
+                            }
+                        }
+                        ///listener
+                        int finalI = i;
+                        int finalSize = size;
+                        ClickableSpan firstwordClick = new ClickableSpan()
+                        {
+                            @Override
+                            public void onClick(View widget)
+                            {
+                                //take us to that person
+                                String alias = string.substring(finalI, finalI + finalSize);
+                                //send a request to find user in database
+                                //make a link to users page
+                                Toast.makeText(getContext(), alias, Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void updateDrawState(TextPaint ds)
+                            {
+                                super.updateDrawState(ds);
+                                ds.setUnderlineText(true);
+                            }
+                        };
+                        builder.setSpan(firstwordClick, i, i + size, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        i += size;
+                    }
+                    else if (string.charAt(i) == 'h' && string.charAt(i + 1) == 't' && string.charAt(i + 2) == 't' && string.charAt(i + 3) == 'p')
+                    {
+                        int size = 0;
+                        for (int j = i; j < string.length(); j++)
+                        {
+                            size++;
+                            if (string.charAt(j) == ' ')
+                            {
+                                size -= 1;
+                                break;
+                            }
+                        }
+                        int finalI = i;
+                        int finalSize = size;
+                        ClickableSpan firstwordClick = new ClickableSpan()
+                        {
+                            @Override
+                            public void onClick(View widget)
+                            {
+                                String URL = string.substring(finalI, finalI + finalSize);
+                                //make a link to the interweb
+                                Toast.makeText(getContext(), URL, Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void updateDrawState(TextPaint ds)
+                            {
+                                super.updateDrawState(ds);
+                                ds.setUnderlineText(true);
+                            }
+                        };
+                        builder.setSpan(firstwordClick, i, i + size, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        i += size;
+                    }
+                } catch (ArrayIndexOutOfBoundsException e)
+                {
+                    continue;
+                }
+            }
+            content.setLinksClickable(true);
+            content.setMovementMethod(LinkMovementMethod.getInstance());
+            content.setText(builder, TextView.BufferType.SPANNABLE);
+            return builder;
         }
     }
 

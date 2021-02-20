@@ -14,11 +14,13 @@ import edu.byu.cs.tweeter.model.service.request.FeedRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowingRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowerRequest;
 import edu.byu.cs.tweeter.model.service.request.LoginRequest;
+import edu.byu.cs.tweeter.model.service.request.RegisterRequest;
 import edu.byu.cs.tweeter.model.service.request.StoryRequest;
 import edu.byu.cs.tweeter.model.service.response.FeedResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowingResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowerResponse;
 import edu.byu.cs.tweeter.model.service.response.LoginResponse;
+import edu.byu.cs.tweeter.model.service.response.RegisterResponse;
 import edu.byu.cs.tweeter.model.service.response.StoryResponse;
 
 /**
@@ -50,7 +52,8 @@ public class ServerFacade {
     private final User user18 = new User("Isabel", "Isaacson", FEMALE_IMAGE_URL);
     private final User user19 = new User("Justin", "Jones", MALE_IMAGE_URL);
     private final User user20 = new User("Jill", "Johnson", FEMALE_IMAGE_URL);
-    private Status stat1 = new Status("@hello @sup content1 https://google.com @hi ", user1, "Wednesday, September 22, 2021");
+    private Status stat1 = new Status("@hello @hi content1 https://google.com", user1, "Wednesday, September 22, 2021");
+    //private Status stat1 = new Status("@hello @sup content1 https://google.com @hi ", user1, "Wednesday, September 22, 2021");
     private Status stat2 = new Status("hello content2", user1, "Thursday, December 4, 2021");
     private Status stat3 = new Status("hello content3", user1, "Wednesday, June 22, 2021");
     private Status stat4 = new Status("hello content4", user1, "Thursday, January 4, 2021");
@@ -69,6 +72,12 @@ public class ServerFacade {
         User user = new User("Test", "User",
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
         return new LoginResponse(user, new AuthToken());
+    }
+
+    public RegisterResponse register(RegisterRequest request) {
+        User user = new User(request.getFirstName(), request.getLastName(),
+                "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
+        return new RegisterResponse(user, new AuthToken());
     }
 
 

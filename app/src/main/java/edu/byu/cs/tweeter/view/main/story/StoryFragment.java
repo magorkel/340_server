@@ -164,9 +164,10 @@ public class StoryFragment extends Fragment implements StoryPresenter.View
                         int size = 0;
                         for (int j = i; j < string.length(); j++)
                         {
+                            size++;
                             if (string.charAt(j) == ' ')
                             {
-                                size = j;
+                                size -= 1;
                                 break;
                             }
                         }
@@ -193,7 +194,6 @@ public class StoryFragment extends Fragment implements StoryPresenter.View
                             }
                         };
                         builder.setSpan(firstwordClick, i, i + size, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        //when done, then i+=j
                         i += size;
                     }
                     else if (string.charAt(i) == 'h' && string.charAt(i + 1) == 't' && string.charAt(i + 2) == 't' && string.charAt(i + 3) == 'p')
@@ -201,9 +201,10 @@ public class StoryFragment extends Fragment implements StoryPresenter.View
                         int size = 0;
                         for (int j = i; j < string.length(); j++)
                         {
-                            if (string.charAt(j) == ' ' || j == (string.length() - 1))
+                            size++;
+                            if (string.charAt(j) == ' ')
                             {
-                                size = j;
+                                size -= 1;
                                 break;
                             }
                         }

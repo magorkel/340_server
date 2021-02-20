@@ -5,23 +5,23 @@ import java.io.IOException;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.ServerFacade;
 import edu.byu.cs.tweeter.model.service.request.LoginRequest;
+import edu.byu.cs.tweeter.model.service.request.RegisterRequest;
 import edu.byu.cs.tweeter.model.service.response.LoginResponse;
+import edu.byu.cs.tweeter.model.service.response.RegisterResponse;
 import edu.byu.cs.tweeter.util.ByteArrayUtils;
 
-/**
- * Contains the business logic to support the login operation.
- */
-public class LoginService {
-
-    public LoginResponse login(LoginRequest request) throws IOException {
+public class RegisterService
+{
+    public RegisterResponse register(RegisterRequest request) throws IOException
+    {
         ServerFacade serverFacade = getServerFacade();
-        LoginResponse loginResponse = serverFacade.login(request);//register this is where we take pic?
+        RegisterResponse registerResponse = serverFacade.register(request);//register this is where we take pic?
 
-        if(loginResponse.isSuccess()) {
-            loadImage(loginResponse.getUser());
+        if(registerResponse.isSuccess()) {
+            loadImage(registerResponse.getUser());
         }
 
-        return loginResponse;
+        return registerResponse;
     }
 
     /**
