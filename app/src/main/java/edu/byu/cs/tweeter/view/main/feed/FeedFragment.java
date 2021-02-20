@@ -1,5 +1,6 @@
 package edu.byu.cs.tweeter.view.main.feed;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -29,16 +30,22 @@ import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.service.request.FeedRequest;
+import edu.byu.cs.tweeter.model.service.request.UserRequest;
 import edu.byu.cs.tweeter.model.service.response.FeedResponse;
+import edu.byu.cs.tweeter.model.service.response.UserResponse;
 import edu.byu.cs.tweeter.presenter.FeedPresenter;
 import edu.byu.cs.tweeter.view.asyncTasks.GetFeedTask;
+import edu.byu.cs.tweeter.view.asyncTasks.GetUserTask;
+import edu.byu.cs.tweeter.view.main.OtherUserActivity;
+import edu.byu.cs.tweeter.view.main.story.StoryFragment;
 import edu.byu.cs.tweeter.view.util.ImageUtils;
 
-public class FeedFragment extends Fragment implements FeedPresenter.View {
+public class FeedFragment extends Fragment implements FeedPresenter.View, GetUserTask.Observer {
     private static final String LOG_TAG = "FeedFragment";
     private static final String USER_KEY = "UserKey";
     //private static final String STATUS_KEY = "StatusKey";
     private static final String AUTH_TOKEN_KEY = "AuthTokenKey";
+    private static final String OTHER_USER_KEY = "OtherUserKey";
 
     private static final int LOADING_DATA_VIEW = 0;
     private static final int ITEM_VIEW = 1;
@@ -51,6 +58,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.View {
     private FeedPresenter presenter;
 
     private FeedFragment.FeedRecyclerViewAdapter feedRecyclerViewAdapter;
+    private FeedFragment pass = this;
 
     /**
      * Creates an instance of the fragment and places the user and auth token in an arguments
@@ -95,6 +103,31 @@ public class FeedFragment extends Fragment implements FeedPresenter.View {
         feedRecyclerView.addOnScrollListener(new FeedFragment.FeedRecyclerViewPaginationScrollListener(layoutManager));
 
         return view;
+    }
+
+    @Override
+    public void usersRetreived(UserResponse userResponse) {
+        //launch intents here
+        Intent intent = new Intent(getActivity(), OtherUserActivity.class);
+
+        intent.putExtra(OtherUserActivity.CURRENT_USER_KEY, user);
+        intent.putExtra(OtherUserActivity.OTHER_USER_KEY, userResponse.getUser());
+        intent.putExtra(OtherUserActivity.AUTH_TOKEN_KEY, authToken);
+        //extra dm for user were finding
+
+        //Toast.cancel();
+        startActivity(intent);
+    }
+
+    @Override
+    public void usersUnsuccessful(UserResponse userResponse) {
+        Toast.makeText(getContext(), "Failed to find User. ", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void handleException(Exception exception) {
+        //return toast that shows no user - or other error.
+        Toast.makeText(getContext(), "ERROR: Failed to find User. ", Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -180,6 +213,12 @@ public class FeedFragment extends Fragment implements FeedPresenter.View {
                                 //send a request to find user in database
                                 //make a link to users page
                                 Toast.makeText(getContext(), alias, Toast.LENGTH_SHORT).show();
+                                // @Override
+                                //public void loginSuccessful(LoginResponse loginResponse) {
+                                UserRequest request = new UserRequest(alias);
+                                GetUserTask task = new GetUserTask(presenter, pass);//Pass is a reference to the Containing
+                                //fragment
+                                task.execute(request);
                             }
 
                             @Override

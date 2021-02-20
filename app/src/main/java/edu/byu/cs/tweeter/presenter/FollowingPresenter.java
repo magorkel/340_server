@@ -9,7 +9,7 @@ import edu.byu.cs.tweeter.model.service.response.FollowingResponse;
 /**
  * The presenter for the "following" functionality of the application.
  */
-public class FollowingPresenter {
+public class FollowingPresenter extends UserPresenter {
 
     private final View view;
 

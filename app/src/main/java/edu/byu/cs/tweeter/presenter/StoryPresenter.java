@@ -6,7 +6,7 @@ import edu.byu.cs.tweeter.model.service.StoryService;
 import edu.byu.cs.tweeter.model.service.request.StoryRequest;
 import edu.byu.cs.tweeter.model.service.response.StoryResponse;
 
-public class StoryPresenter
+public class StoryPresenter extends UserPresenter
 {
     private final View view;
 
@@ -17,7 +17,7 @@ public class StoryPresenter
         // If needed, specify methods here that will be called on the view in response to model updates
     }
 
-    /**
+     /**
      * Creates an instance.
      *
      * @param view the view for which this class is the presenter.

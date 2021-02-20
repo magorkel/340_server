@@ -7,7 +7,7 @@ import edu.byu.cs.tweeter.model.service.request.FeedRequest;
 import edu.byu.cs.tweeter.model.service.response.FeedResponse;
 
 
-public class FeedPresenter {
+public class FeedPresenter extends UserPresenter {
     private final FeedPresenter.View view;
 
     /**

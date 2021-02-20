@@ -19,12 +19,14 @@ import edu.byu.cs.tweeter.model.service.request.FollowerRequest;
 import edu.byu.cs.tweeter.model.service.request.LoginRequest;
 import edu.byu.cs.tweeter.model.service.request.RegisterRequest;
 import edu.byu.cs.tweeter.model.service.request.StoryRequest;
+import edu.byu.cs.tweeter.model.service.request.UserRequest;
 import edu.byu.cs.tweeter.model.service.response.FeedResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowingResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowerResponse;
 import edu.byu.cs.tweeter.model.service.response.LoginResponse;
 import edu.byu.cs.tweeter.model.service.response.RegisterResponse;
 import edu.byu.cs.tweeter.model.service.response.StoryResponse;
+import edu.byu.cs.tweeter.model.service.response.UserResponse;
 
 /**
  * Acts as a Facade to the Tweeter server. All network requests to the server should go through
@@ -55,13 +57,47 @@ public class ServerFacade {
     private final User user18 = new User("Isabel", "Isaacson", FEMALE_IMAGE_URL);
     private final User user19 = new User("Justin", "Jones", MALE_IMAGE_URL);
     private final User user20 = new User("Jill", "Johnson", FEMALE_IMAGE_URL);
-    private Status stat1 = new Status("@hello @hi content1 https://google.com", user1, "Wednesday, September 22, 2021");
+    private Status stat1 = new Status("@AllenAnderson @hi content1 https://google.com", user1, "Wednesday, September 22, 2021");
     //private Status stat1 = new Status("@hello @sup content1 https://google.com @hi ", user1, "Wednesday, September 22, 2021");
     private Status stat2 = new Status("hello content2", user1, "Thursday, December 4, 2021");
     private Status stat3 = new Status("hello content3", user1, "Wednesday, June 22, 2021");
     private Status stat4 = new Status("hello content4", user1, "Thursday, January 4, 2021");
+
+    private ArrayList<User> userList = new ArrayList<>();
+
     //private Story story = new Story(stat1, stat2, "@billyjoe");//make a list of story objects we can iterate through
     //private User user21 = new User("Billy", "BobJoe", "@billybobjoe", MALE_IMAGE_URL);
+
+
+    public UserResponse findUser(UserRequest request) {
+        //check through db of users
+        userList.add(user1);
+        userList.add(user2);
+        userList.add(user3);
+        userList.add(user4);
+        userList.add(user5);
+        userList.add(user6);
+
+       // boolean found = false;
+        User retUser = null;
+
+        for (int i = 0; i < userList.size(); i++) {
+            if (request.getUserAlias().equals(userList.get(i).getAlias())) {
+                //found = true;
+                retUser = userList.get(i);
+                break;
+            }
+        }
+
+        //if found, return
+        if (retUser != null) {
+            return new UserResponse(retUser);
+        }
+        else {
+            return new UserResponse("Could not find User");
+        }
+        //else return error
+    }
 
     /**
      * Performs a login and if successful, returns the logged in user and an auth token. The current
