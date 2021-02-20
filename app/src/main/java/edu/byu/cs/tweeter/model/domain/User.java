@@ -21,9 +21,18 @@ public class User implements Comparable<User>, Serializable {
         alias = "";
         imageUrl = "";
     }//
+    //create a constructor that accepts a bytearray.
 
     public User(String firstName, String lastName, String imageURL) {
         this(firstName, lastName, String.format("@%s%s", firstName, lastName), imageURL);
+    }
+
+    public User (String firstName, String lastName, String alias, byte[] imageBytes) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.alias = alias;
+        this.imageUrl = "";//Make sure this doesn't cause image display issues
+        this.imageBytes = imageBytes;
     }
 
     public User(String firstName, String lastName, String alias, String imageURL) {

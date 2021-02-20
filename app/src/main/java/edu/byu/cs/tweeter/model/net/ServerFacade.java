@@ -1,5 +1,8 @@
 package edu.byu.cs.tweeter.model.net;
 
+import android.graphics.Bitmap;
+
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -69,15 +72,46 @@ public class ServerFacade {
      * @return the login response.
      */
     public LoginResponse login(LoginRequest request) {
-        User user = new User("Test", "User",
-                "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
-        return new LoginResponse(user, new AuthToken());
+        //Check and verify that password is correct
+        if (request.getPassword().equals("tempPass")) {
+            User user = new User("Test", "User",
+                    "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
+            return new LoginResponse(user, new AuthToken());
+        }
+        else {
+            //Failed to find password
+            return new LoginResponse("Could not find Password =(");
+        }
+
     }
 
     public RegisterResponse register(RegisterRequest request) {
-        User user = new User(request.getFirstName(), request.getLastName(),
-                "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
-        return new RegisterResponse(user, new AuthToken());
+        //This one will check all usernames and make sure yours is not taken before returning.
+        ArrayList taken = new ArrayList<String> ();
+        taken.add("freddyJ");
+        taken.add("daphneB");
+        taken.add("velmaD");
+        taken.add("scoobyD");
+        boolean unique = true;
+        for (int i = 0; i < taken.size(); i++) {
+            if (request.getUsername().equals(taken.get(i))) {
+                unique = false;
+            }
+        }
+        if (unique) {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            Bitmap bmp = request.getImageBytes();
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] byteArray = stream.toByteArray();
+            bmp.recycle();
+            User user = new User(request.getFirstName(), request.getLastName(), "@" + request.getFirstName() + request.getLastName(),
+                    byteArray);
+            return new RegisterResponse(user, new AuthToken());
+        }
+        else {
+            return new RegisterResponse("Error, Username taken");
+        }
+
     }
 
 

@@ -1,11 +1,15 @@
 package edu.byu.cs.tweeter.model.service.request;
 
+import android.graphics.Bitmap;
+
 public class RegisterRequest
 {
     private final String username;
     private final String password;
     private final String firstName;
     private final String lastName;
+    //private final String imageUrl;
+    private Bitmap imageBytes;
     //need image?
 
     /**
@@ -14,11 +18,12 @@ public class RegisterRequest
      * @param username the username of the user to be logged in.
      * @param password the password of the user to be logged in.
      */
-    public RegisterRequest(String username, String password, String firstName, String lastName) {
+    public RegisterRequest(String username, String password, String firstName, String lastName, Bitmap imageBytes ) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.imageBytes = imageBytes;
     }
 
     /**
@@ -40,4 +45,5 @@ public class RegisterRequest
     }
     public String getFirstName() { return firstName; }
     public String getLastName() { return lastName; }
+    public Bitmap getImageBytes() { return imageBytes; }
 }
