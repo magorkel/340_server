@@ -144,14 +144,14 @@ public class OtherUserActivity extends AppCompatActivity implements MakeFollowPr
 
         // We should use a Java 8 lambda function for the listener (and all other listeners), but
         // they would be unfamiliar to many students who use this code.
-        /*
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });*/
+        });
 
         TextView userName = findViewById(R.id.userName);
         userName.setText(user.getName());
