@@ -17,8 +17,10 @@ import edu.byu.cs.tweeter.model.service.request.FeedRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowingRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowerRequest;
 import edu.byu.cs.tweeter.model.service.request.LoginRequest;
+import edu.byu.cs.tweeter.model.service.request.LogoutRequest;
 import edu.byu.cs.tweeter.model.service.request.MakeFollowRequest;
 import edu.byu.cs.tweeter.model.service.request.MakeUnfollowRequest;
+import edu.byu.cs.tweeter.model.service.request.PostRequest;
 import edu.byu.cs.tweeter.model.service.request.RegisterRequest;
 import edu.byu.cs.tweeter.model.service.request.StoryRequest;
 import edu.byu.cs.tweeter.model.service.request.UserRequest;
@@ -26,8 +28,10 @@ import edu.byu.cs.tweeter.model.service.response.FeedResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowingResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowerResponse;
 import edu.byu.cs.tweeter.model.service.response.LoginResponse;
+import edu.byu.cs.tweeter.model.service.response.LogoutResponse;
 import edu.byu.cs.tweeter.model.service.response.MakeFollowResponse;
 import edu.byu.cs.tweeter.model.service.response.MakeUnfollowResponse;
+import edu.byu.cs.tweeter.model.service.response.PostResponse;
 import edu.byu.cs.tweeter.model.service.response.RegisterResponse;
 import edu.byu.cs.tweeter.model.service.response.StoryResponse;
 import edu.byu.cs.tweeter.model.service.response.UserResponse;
@@ -163,6 +167,22 @@ public class ServerFacade {
     public MakeUnfollowResponse updateUnfollowServer(MakeUnfollowRequest request)
     {
         return new MakeUnfollowResponse(true,"successfully unfollowed");
+    }
+
+    public PostResponse updatePostServer(PostRequest request)
+    {
+        //add to feed and story
+        return new PostResponse(true, "successfully posted");
+    }
+
+    public LogoutResponse logout(LogoutRequest request)
+    {
+        //Check and verify that password is correct
+        //verifies that user is in database
+        //grab authtoken
+        //nullify authtoken
+
+        return new LogoutResponse(true, "successfully logged out");
     }
 
 
