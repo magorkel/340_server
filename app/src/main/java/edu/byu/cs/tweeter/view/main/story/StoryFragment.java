@@ -1,6 +1,7 @@
 package edu.byu.cs.tweeter.view.main.story;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -263,6 +264,8 @@ public class StoryFragment extends Fragment implements StoryPresenter.View, GetU
                             {
                                 String URL = string.substring(finalI, finalI + finalSize);
                                 //make a link to the interweb
+                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(URL));
+                                startActivity(browserIntent);
                                 Toast.makeText(getContext(), URL, Toast.LENGTH_SHORT).show();
                             }
 

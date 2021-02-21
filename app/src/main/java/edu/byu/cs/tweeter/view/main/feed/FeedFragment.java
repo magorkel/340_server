@@ -1,6 +1,7 @@
 package edu.byu.cs.tweeter.view.main.feed;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -252,6 +253,8 @@ public class FeedFragment extends Fragment implements FeedPresenter.View, GetUse
                             {
                                 String URL = string.substring(finalI, finalI + finalSize);
                                 //make a link to the interweb
+                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(URL));
+                                startActivity(browserIntent);
                                 Toast.makeText(getContext(), URL, Toast.LENGTH_SHORT).show();
                             }
 
