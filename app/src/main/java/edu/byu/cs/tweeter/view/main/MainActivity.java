@@ -104,8 +104,8 @@ public class MainActivity extends AppCompatActivity implements PostPresenter.Vie
     private void showAddItemDialog(Context c) {
         final EditText taskEditText = new EditText(c);
         AlertDialog dialog = new AlertDialog.Builder(c)
-                .setTitle("Add a new task")
-                .setMessage("What do you want to do next?")
+                .setTitle("Post")
+                .setMessage("What do you want to post next?")
                 .setView(taskEditText)
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     @RequiresApi(api = Build.VERSION_CODES.O)
