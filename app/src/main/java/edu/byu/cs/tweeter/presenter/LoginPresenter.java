@@ -35,7 +35,18 @@ public class LoginPresenter {
      * @param loginRequest the request.
      */
     public LoginResponse login(LoginRequest loginRequest) throws IOException {
-        LoginService loginService = new LoginService();
+        LoginService loginService = getLoginService();
         return loginService.login(loginRequest);
+    }
+
+    /**
+     * Returns an instance of {@link LoginService}. Allows mocking of the FollowingService class
+     * for testing purposes. All usages of FollowingService should get their FollowingService
+     * instance from this method to allow for mocking of the instance.
+     *
+     * @return the instance.
+     */
+    LoginService getLoginService() {
+        return new LoginService();
     }
 }

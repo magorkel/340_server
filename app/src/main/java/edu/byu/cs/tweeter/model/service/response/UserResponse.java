@@ -5,6 +5,7 @@ import java.util.Objects;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class UserResponse extends Response {
+    //These classes are for switching view between selected users in Feed, Story, Follows... Fragments.
     private User user;
 
     /**

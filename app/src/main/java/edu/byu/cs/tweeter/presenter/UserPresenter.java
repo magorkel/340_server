@@ -10,7 +10,7 @@ import edu.byu.cs.tweeter.model.service.response.FollowerResponse;
 import edu.byu.cs.tweeter.model.service.response.UserResponse;
 //This is a PARENT CLASS
 
-public class UserPresenter {
+public abstract class UserPresenter { //This class isn't initialized, so we will make it abstract. So it doesn't need its own.
 
 
     //A defualt constructor. Does nothing to the view.
