@@ -1,5 +1,9 @@
 package edu.byu.cs.tweeter.presenter;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.service.LoginService;
@@ -32,6 +36,7 @@ public class RegisterPresenter
      *
      * @param registerRequest the request.
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public RegisterResponse register(RegisterRequest registerRequest) throws IOException
     {
         RegisterService registerService = getRegisterService();

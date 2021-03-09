@@ -1,7 +1,10 @@
 package edu.byu.cs.tweeter.view.asyncTasks;
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import java.io.IOException;
 
@@ -50,6 +53,7 @@ public class RegisterTask extends AsyncTask<RegisterRequest, Void, RegisterRespo
      * @param registerRequests the request object (there will only be one).
      * @return the response.
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected RegisterResponse doInBackground(RegisterRequest... registerRequests) {
         RegisterResponse registerResponse = null;

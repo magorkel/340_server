@@ -21,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
+
 import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.model.service.request.LoginRequest;
 import edu.byu.cs.tweeter.model.service.request.RegisterRequest;
@@ -50,6 +52,7 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenter.V
     private EditTextWatcher firstName = new EditTextWatcher();//only for register
     private EditTextWatcher lastName = new EditTextWatcher();//only for register
     //need the image?
+    //private String URL;
     private Bitmap image;
 
     private Button loginButton;
@@ -142,8 +145,15 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenter.V
                 registerToast = Toast.makeText(LoginActivity.this, "Registering You", Toast.LENGTH_LONG);
                 registerToast.show();
 
+                //bitmap = image;
+                Bitmap bmp = image;
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+                bmp.recycle();
+
                 // It doesn't matter what values we put here. We will be logged in with a hard-coded dummy user.
-                RegisterRequest registerRequest = new RegisterRequest(UserNameField.getText().toString(), PasswordField.getText().toString(), FirstNameField.getText().toString(), LastNameField.getText().toString(), image /*picture*/);
+                RegisterRequest registerRequest = new RegisterRequest(UserNameField.getText().toString(), PasswordField.getText().toString(), FirstNameField.getText().toString(), LastNameField.getText().toString(), byteArray /*image /*picture*/);
                 RegisterTask registerTask = new RegisterTask(rPresenter, LoginActivity.this);///????? what???? can't change it to register activity because we don't want one
                 //create register activity, register them, then return them to login activity to relogin?
                 registerTask.execute(registerRequest);

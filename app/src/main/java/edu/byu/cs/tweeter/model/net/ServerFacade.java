@@ -1,8 +1,14 @@
 package edu.byu.cs.tweeter.model.net;
 
 import android.graphics.Bitmap;
+import android.os.Build;
 
+import androidx.annotation.RequiresApi;
+
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,6 +41,14 @@ import edu.byu.cs.tweeter.model.service.response.PostResponse;
 import edu.byu.cs.tweeter.model.service.response.RegisterResponse;
 import edu.byu.cs.tweeter.model.service.response.StoryResponse;
 import edu.byu.cs.tweeter.model.service.response.UserResponse;
+
+import com.amazonaws.services.s3.AmazonS3;
+
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 
 /**
  * Acts as a Facade to the Tweeter server. All network requests to the server should go through
@@ -126,9 +140,9 @@ public class ServerFacade {
             //Failed to find password
             return new LoginResponse("Could not find Password =(");
         }
-
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public RegisterResponse register(RegisterRequest request) {
         //This one will check all usernames and make sure yours is not taken before returning.
         ArrayList taken = new ArrayList<String> ();
@@ -143,13 +157,49 @@ public class ServerFacade {
             }
         }
         if (unique) {
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            /*ByteArrayOutputStream stream = new ByteArrayOutputStream();
             Bitmap bmp = request.getImageBytes();
             bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] byteArray = stream.toByteArray();
-            bmp.recycle();
+
+            ByteArrayInputStream bs = new ByteArrayInputStream(byteArray);
+
+            String newBitmap = Base64.getEncoder().encodeToString(byteArray);
+            bmp.recycle();*/
+
+            //avatar.recycle();
+
+            //send to s3, get url back, send url instead of image
+            // Create AmazonS3 object for doing S3 operations
+
+            //ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            //bmp.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+            //byte[] bitmapdata = bos.toByteArray();
+
+            /*AmazonS3Client s3 = (AmazonS3Client) AmazonS3ClientBuilder.defaultClient();
+
+
+            AmazonS3 s3 = AmazonS3ClientBuilder
+                    .standard()
+                    .withRegion("us-west-2")
+                    .build();
+            // Write code to do the following:
+            // 1. get name of file to be copied from the command line
+            // 2. get name of S3 bucket from the command line
+            // 3. upload file to the specified S3 bucket using the file name as the S3 key
+            PutObjectRequest objectRequest = new PutObjectRequest("bitmaptostringurl", request.getUsername() + "Image.png", bs, new ObjectMetadata()).withCannedAcl(CannedAccessControlList.PublicRead);
+            ;
+            s3.putObject(objectRequest);
+            //PutObjectRequest(java.lang.String bucketName,
+            //                        java.lang.String key,
+            //                        java.io.InputStream input,
+            //                        ObjectMetadata metadata)
+
+            //s3.putObject("bitmaptostringurl", bs, "Upload bitmap");
+
+            String url = s3.getResourceUrl("bitmaptostringurl", request.getUsername()+"Image.png");*/
             User user = new User(request.getFirstName(), request.getLastName(), "@" + request.getFirstName() + request.getLastName(),
-                    byteArray);
+                    request.getImage()/*newBitmap*/);//decode back into a bitearray and then do all that above
             return new RegisterResponse(user, new AuthToken());
         }
         else {

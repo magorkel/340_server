@@ -1,5 +1,9 @@
 package edu.byu.cs.tweeter.model.service;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.domain.User;
@@ -12,6 +16,7 @@ import edu.byu.cs.tweeter.util.ByteArrayUtils;
 
 public class RegisterService
 {
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public RegisterResponse register(RegisterRequest request) throws IOException
     {
         ServerFacade serverFacade = getServerFacade();
