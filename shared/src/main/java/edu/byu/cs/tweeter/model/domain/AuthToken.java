@@ -7,10 +7,22 @@ import java.io.Serializable;
  */
 public class AuthToken implements Serializable {
     //don't need to implement until milestone 4
-    /*private final String authToken;
+    private String authToken;
 
     public AuthToken(String authToken)
     {
         this.authToken = authToken;
-    }*/
+    }
+
+    public AuthToken() {}
+
+    public String getAuthToken()
+    {
+        return authToken;
+    }
+
+    public void setAuthToken(String authToken)
+    {
+        this.authToken = authToken;
+    }
 }

@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,6 +59,8 @@ public class ServerFacade {
     // This is the hard coded followee data returned by the 'getFollowees()' method
     private static final String MALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png";
     private static final String FEMALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png";
+
+    private ClientCommunicator clientCommunicator = new ClientCommunicator("https://fqqrokppv3.execute-api.us-west-2.amazonaws.com/dev");
 
     private final User user1 = new User("Allen", "Anderson", MALE_IMAGE_URL);
     private final User user2 = new User("Amy", "Ames", FEMALE_IMAGE_URL);
@@ -247,10 +250,10 @@ public class ServerFacade {
      *                other information required to satisfy the request.
      * @return the following response.
      */
-    public FollowingResponse getFollowees(FollowingRequest request) {
+    public FollowingResponse getFollowees(FollowingRequest request/*, String urlPath*/) throws IOException, TweeterRemoteException {
 
         // Used in place of assert statements because Android does not support them
-        if(BuildConfig.DEBUG) {
+        /*if(BuildConfig.DEBUG) {
             if(request.getLimit() < 0) {
                 throw new AssertionError();
             }
@@ -275,7 +278,15 @@ public class ServerFacade {
             hasMorePages = followeesIndex < allFollowees.size();
         }
 
-        return new FollowingResponse(responseFollowees, hasMorePages);
+        return new FollowingResponse(responseFollowees, hasMorePages);*/
+        String urlPath = "/getfollowing";
+        FollowingResponse response = clientCommunicator.doPost(urlPath, request, null, FollowingResponse.class);
+
+        if(response.isSuccess()) {
+            return response;
+        } else {
+            throw new RuntimeException(response.getMessage());
+        }
     }
 
     /**

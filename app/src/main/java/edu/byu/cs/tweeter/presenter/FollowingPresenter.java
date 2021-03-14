@@ -2,6 +2,7 @@ package edu.byu.cs.tweeter.presenter;
 
 import java.io.IOException;
 
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.service.FollowingService;
 import edu.byu.cs.tweeter.model.service.request.FollowingRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowingResponse;
@@ -37,7 +38,8 @@ public class FollowingPresenter extends UserPresenter {
      * @param request contains the data required to fulfill the request.
      * @return the followees.
      */
-    public FollowingResponse getFollowing(FollowingRequest request) throws IOException {
+    public FollowingResponse getFollowing(FollowingRequest request) throws IOException, TweeterRemoteException
+    {
         FollowingService followingService = getFollowingService();
         return followingService.getFollowees(request);
     }
