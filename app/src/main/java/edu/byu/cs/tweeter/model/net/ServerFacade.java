@@ -332,9 +332,10 @@ public class ServerFacade {
     }
 
     //Follower starts here----------------------------------------------------------------------------------------------------------------------------
-    public FollowerResponse getFollowers(FollowerRequest request) {
+    public FollowerResponse getFollowers(FollowerRequest request) throws IOException, TweeterRemoteException
+    {
 
-        // Used in place of assert statements because Android does not support them
+        /*// Used in place of assert statements because Android does not support them
         if(BuildConfig.DEBUG) {
             if(request.getLimit() < 0) {
                 throw new AssertionError();
@@ -360,7 +361,15 @@ public class ServerFacade {
             hasMorePages = followersIndex < allFollowers.size();
         }
 
-        return new FollowerResponse(responseFollowers, hasMorePages);
+        return new FollowerResponse(responseFollowers, hasMorePages);*/
+        String urlPath = "/getfollower";
+        FollowerResponse response = clientCommunicator.doPost(urlPath, request, null, FollowerResponse.class);
+
+        if(response.isSuccess()) {
+            return response;
+        } else {
+            throw new RuntimeException(response.getMessage());
+        }
     }
 
     private int getFollowersStartingIndex(String lastFollowerAlias, List<User> allFollowers) {//getstatusstartingindex     string alias is a status

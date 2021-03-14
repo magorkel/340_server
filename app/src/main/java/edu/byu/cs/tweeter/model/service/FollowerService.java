@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.ServerFacade;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.service.request.FollowerRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowerResponse;
 import edu.byu.cs.tweeter.util.ByteArrayUtils;
@@ -19,7 +20,8 @@ public class FollowerService
      * @param request contains the data required to fulfill the request.
      * @return the followees.
      */
-    public FollowerResponse getFollowers(FollowerRequest request) throws IOException {
+    public FollowerResponse getFollowers(FollowerRequest request) throws IOException, TweeterRemoteException
+    {
         FollowerResponse response = getServerFacade().getFollowers(request);
 
         if(response.isSuccess()) {

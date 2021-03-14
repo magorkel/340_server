@@ -1,20 +1,18 @@
 package edu.byu.cs.tweeter.server.dao;
 
+import edu.byu.cs.tweeter.model.domain.AuthToken;
+import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.service.request.FollowingRequest;
+import edu.byu.cs.tweeter.model.service.request.LoginRequest;
+import edu.byu.cs.tweeter.model.service.response.FollowingResponse;
+import edu.byu.cs.tweeter.model.service.response.LoginResponse;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.model.service.request.FollowerRequest;
-import edu.byu.cs.tweeter.model.service.request.FollowingRequest;
-import edu.byu.cs.tweeter.model.service.response.FollowerResponse;
-import edu.byu.cs.tweeter.model.service.response.FollowingResponse;
-
-/**
- * A DAO for accessing 'following' data from the database.
- */
-public class FollowingDAO {
-    // This is the hard coded followee data returned by the 'getFollowees()' method
+public class UserDAO
+{
     private static final String MALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png";
     private static final String FEMALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png";
 
@@ -39,17 +37,10 @@ public class FollowingDAO {
     private final User user19 = new User("Justin", "Jones", MALE_IMAGE_URL);
     private final User user20 = new User("Jill", "Johnson", FEMALE_IMAGE_URL);
 
-    /**
-     * Gets the count of users from the database that the user specified is following. The
-     * current implementation uses generated data and doesn't actually access a database.
-     *
-     * @param follower the User whose count of how many following is desired.
-     * @return said count.
-     */
-    public Integer getFolloweeCount(User follower) {
+    public Integer getUserCount(User user) {
         // TODO: uses the dummy data.  Replace with a real implementation.
-        assert follower != null;
-        return getDummyFollowees().size();
+        assert user != null;
+        return getDummyUsers().size();
     }
 
     /**
@@ -62,12 +53,18 @@ public class FollowingDAO {
      *                other information required to satisfy the request.
      * @return the followees.
      */
-    public FollowingResponse getFollowees(FollowingRequest request) {
-        // TODO: Generates dummy data. Replace with a real implementation.
-        assert request.getLimit() > 0;
-        assert request.getFollowerAlias() != null;
+    public LoginResponse getLogin(LoginRequest request) {
+        if (request.getPassword().equals("tempPass")) {
+            User user = new User("Test", "User",
+                    "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
+            return new LoginResponse(user, new AuthToken());
+        }
+        else {
+            //Failed to find password
+            return new LoginResponse("Could not find Password =(");
+        }
 
-        List<User> allFollowees = getDummyFollowees();
+        /*List<User> allFollowees = getDummyFollowees();
         List<User> responseFollowees = new ArrayList<>(request.getLimit());
 
         boolean hasMorePages = false;
@@ -84,32 +81,7 @@ public class FollowingDAO {
             }
         }
 
-        return new FollowingResponse(responseFollowees, hasMorePages);
-    }
-
-    public FollowerResponse getFollower(FollowerRequest request) {
-        // TODO: Generates dummy data. Replace with a real implementation.
-        assert request.getLimit() > 0;
-        assert request.getFollowerAlias() != null;
-
-        List<User> allFollowers = getDummyFollowees();
-        List<User> responseFollowers = new ArrayList<>(request.getLimit());
-
-        boolean hasMorePages = false;
-
-        if(request.getLimit() > 0) {
-            if (allFollowers != null) {
-                int followersIndex = getFolloweesStartingIndex(request.getLastFollowerAlias(), allFollowers);
-
-                for(int limitCounter = 0; followersIndex < allFollowers.size() && limitCounter < request.getLimit(); followersIndex++, limitCounter++) {
-                    responseFollowers.add(allFollowers.get(followersIndex));
-                }
-
-                hasMorePages = followersIndex < allFollowers.size();
-            }
-        }
-
-        return new FollowerResponse(responseFollowers, hasMorePages);
+        return new FollowingResponse(responseFollowees, hasMorePages);*/
     }
 
     /**
@@ -148,7 +120,7 @@ public class FollowingDAO {
      *
      * @return the followees.
      */
-    List<User> getDummyFollowees() {
+    List<User> getDummyUsers() {
         return Arrays.asList(user1, user2, user3, user4, user5, user6, user7,
                 user8, user9, user10, user11, user12, user13, user14, user15, user16, user17, user18,
                 user19, user20);

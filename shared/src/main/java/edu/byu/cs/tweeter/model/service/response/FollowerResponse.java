@@ -19,6 +19,10 @@ public class FollowerResponse extends PagedResponse
         super(false, message, false);
     }
 
+    public FollowerResponse() {
+        super(false, "test", false);
+    }
+
     /**
      * Creates a response indicating that the corresponding request was successful.
      *
