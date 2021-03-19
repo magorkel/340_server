@@ -11,4 +11,8 @@ public class PostResponse extends Response
     {
         super(success, message);
     }
+
+    public PostResponse(){
+        super(false, "test");
+    }
 }

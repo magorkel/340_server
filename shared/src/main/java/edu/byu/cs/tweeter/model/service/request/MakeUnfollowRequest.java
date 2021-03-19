@@ -20,4 +20,16 @@ public class MakeUnfollowRequest
         this.followerAlias = followerAlias;
         this.followerAlias = followerAlias;
     }
+
+    public MakeUnfollowRequest() {}
+
+    public void setFollowerAlias(String followerAlias)
+    {
+        this.followerAlias = followerAlias;
+    }
+
+    public void setFolloweeAlias(String followeeAlias)
+    {
+        this.followeeAlias = followeeAlias;
+    }
 }

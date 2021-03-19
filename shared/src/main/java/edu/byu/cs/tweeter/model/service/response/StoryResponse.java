@@ -19,5 +19,14 @@ public class StoryResponse extends PagedResponse
         this.posts = posts;
     }
 
+    public StoryResponse() {
+        super(false, "test", false);
+    }
+
+    public void setPosts(List<Status> posts)
+    {
+        this.posts = posts;
+    }
+
     public List<Status> getStory() { return posts; }
 }

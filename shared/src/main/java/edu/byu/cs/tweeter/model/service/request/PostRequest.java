@@ -9,9 +9,16 @@ public class PostRequest
         return postStatus;
     }
 
-    private final Status postStatus;
+    private Status postStatus;
 
     public PostRequest(Status postStatus)
+    {
+        this.postStatus = postStatus;
+    }
+
+    public PostRequest() {}
+
+    public void setPostStatus(Status postStatus)
     {
         this.postStatus = postStatus;
     }

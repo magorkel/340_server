@@ -21,5 +21,15 @@ public class MakeFollowRequest
         this.followerAlias = followerAlias;
     }
 
+    public MakeFollowRequest() {}
 
+    public void setFollowerAlias(String followerAlias)
+    {
+        this.followerAlias = followerAlias;
+    }
+
+    public void setFolloweeAlias(String followeeAlias)
+    {
+        this.followeeAlias = followeeAlias;
+    }
 }

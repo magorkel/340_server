@@ -13,4 +13,8 @@ public class MakeFollowResponse extends Response
     {
         super(success, message);
     }
+
+    public MakeFollowResponse() {
+        super(false, "test");
+    }
 }

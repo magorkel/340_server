@@ -7,8 +7,12 @@ import java.util.List;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.service.request.FollowerRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowingRequest;
+import edu.byu.cs.tweeter.model.service.request.MakeFollowRequest;
+import edu.byu.cs.tweeter.model.service.request.MakeUnfollowRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowerResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowingResponse;
+import edu.byu.cs.tweeter.model.service.response.MakeFollowResponse;
+import edu.byu.cs.tweeter.model.service.response.MakeUnfollowResponse;
 
 /**
  * A DAO for accessing 'following' data from the database.
@@ -152,5 +156,15 @@ public class FollowingDAO {
         return Arrays.asList(user1, user2, user3, user4, user5, user6, user7,
                 user8, user9, user10, user11, user12, user13, user14, user15, user16, user17, user18,
                 user19, user20);
+    }
+
+    public MakeFollowResponse updateFollowServer(MakeFollowRequest request)
+    {
+        //pull out two users and update their lists
+        return new MakeFollowResponse(true,"successfully followed");
+    }
+    public MakeUnfollowResponse updateUnfollowServer(MakeUnfollowRequest request)
+    {
+        return new MakeUnfollowResponse(true,"successfully unfollowed");
     }
 }

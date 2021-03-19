@@ -11,4 +11,8 @@ public class MakeUnfollowResponse extends Response
     {
         super(success, message);
     }
+
+    public MakeUnfollowResponse() {
+        super(false, "test");
+    }
 }
