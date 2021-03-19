@@ -32,6 +32,20 @@ public class LoginResponse extends Response {
         this.authToken = authToken;
     }
 
+    public LoginResponse() {
+        super(false, "test");
+    }
+
+    public void setUser(User user)
+    {
+        this.user = user;
+    }
+
+    public void setAuthToken(AuthToken authToken)
+    {
+        this.authToken = authToken;
+    }
+
     /**
      * Returns the logged in user.
      *

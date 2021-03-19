@@ -37,11 +37,11 @@ public class UserDAO
     private final User user19 = new User("Justin", "Jones", MALE_IMAGE_URL);
     private final User user20 = new User("Jill", "Johnson", FEMALE_IMAGE_URL);
 
-    public Integer getUserCount(User user) {
+    /*public Integer getUserCount(User user) {
         // TODO: uses the dummy data.  Replace with a real implementation.
         assert user != null;
         return getDummyUsers().size();
-    }
+    }*/
 
     /**
      * Gets the users from the database that the user specified in the request is following. Uses
@@ -49,39 +49,14 @@ public class UserDAO
      * next set of followees after any that were returned in a previous request. The current
      * implementation returns generated data and doesn't actually access a database.
      *
-     * @param request contains information about the user whose followees are to be returned and any
+     * @param userName contains information about the user whose followees are to be returned and any
      *                other information required to satisfy the request.
      * @return the followees.
      */
-    public LoginResponse getLogin(LoginRequest request) {
-        if (request.getPassword().equals("tempPass")) {
-            User user = new User("Test", "User",
-                    "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
-            return new LoginResponse(user, new AuthToken());
-        }
-        else {
-            //Failed to find password
-            return new LoginResponse("Could not find Password =(");
-        }
+    public User getUser(String userName) {
+        //query statement returns the given user based on the userName;
 
-        /*List<User> allFollowees = getDummyFollowees();
-        List<User> responseFollowees = new ArrayList<>(request.getLimit());
-
-        boolean hasMorePages = false;
-
-        if(request.getLimit() > 0) {
-            if (allFollowees != null) {
-                int followeesIndex = getFolloweesStartingIndex(request.getLastFolloweeAlias(), allFollowees);
-
-                for(int limitCounter = 0; followeesIndex < allFollowees.size() && limitCounter < request.getLimit(); followeesIndex++, limitCounter++) {
-                    responseFollowees.add(allFollowees.get(followeesIndex));
-                }
-
-                hasMorePages = followeesIndex < allFollowees.size();
-            }
-        }
-
-        return new FollowingResponse(responseFollowees, hasMorePages);*/
+        return user1;
     }
 
     /**
@@ -94,7 +69,7 @@ public class UserDAO
      * @param allFollowees the generated list of followees from which we are returning paged results.
      * @return the index of the first followee to be returned.
      */
-    private int getFolloweesStartingIndex(String lastFolloweeAlias, List<User> allFollowees) {
+    /*private int getFolloweesStartingIndex(String lastFolloweeAlias, List<User> allFollowees) {
 
         int followeesIndex = 0;
 
@@ -112,7 +87,7 @@ public class UserDAO
         }
 
         return followeesIndex;
-    }
+    }*/
 
     /**
      * Returns the list of dummy followee data. This is written as a separate method to allow
