@@ -20,6 +20,17 @@ public class FeedResponse extends PagedResponse
         this.posts = posts;
     }
 
+    public FeedResponse()
+    {
+        super(false, "test", false);
+
+    }
+
+    public void setPosts(List<Status> posts)
+    {
+        this.posts = posts;
+    }
+
     public List<Status> getFeed() { return posts; }
 
     @Override

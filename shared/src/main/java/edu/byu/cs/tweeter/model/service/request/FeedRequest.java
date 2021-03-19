@@ -4,9 +4,9 @@ import edu.byu.cs.tweeter.model.domain.Status;
 
 public class FeedRequest
 {
-    private final String username;
-    private final int limit;
-    private final Status lastStatus;
+    private String username;
+    private int limit;
+    private Status lastStatus;
 
 
     public String getUsername()
@@ -18,6 +18,23 @@ public class FeedRequest
     {
         this.username = username;
         this.limit = limit;
+        this.lastStatus = lastStatus;
+    }
+
+    public FeedRequest() {}
+
+    public void setUsername(String username)
+    {
+        this.username = username;
+    }
+
+    public void setLimit(int limit)
+    {
+        this.limit = limit;
+    }
+
+    public void setLastStatus(Status lastStatus)
+    {
         this.lastStatus = lastStatus;
     }
 
