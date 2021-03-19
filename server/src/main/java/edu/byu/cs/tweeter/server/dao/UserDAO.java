@@ -4,9 +4,12 @@ import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.service.request.FollowingRequest;
 import edu.byu.cs.tweeter.model.service.request.LoginRequest;
+import edu.byu.cs.tweeter.model.service.request.UserRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowingResponse;
 import edu.byu.cs.tweeter.model.service.response.LoginResponse;
+import edu.byu.cs.tweeter.model.service.response.UserResponse;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +39,8 @@ public class UserDAO
     private final User user18 = new User("Isabel", "Isaacson", FEMALE_IMAGE_URL);
     private final User user19 = new User("Justin", "Jones", MALE_IMAGE_URL);
     private final User user20 = new User("Jill", "Johnson", FEMALE_IMAGE_URL);
+
+    private ArrayList<User> userList = new ArrayList<>();
 
     /*public Integer getUserCount(User user) {
         // TODO: uses the dummy data.  Replace with a real implementation.
@@ -99,5 +104,36 @@ public class UserDAO
         return Arrays.asList(user1, user2, user3, user4, user5, user6, user7,
                 user8, user9, user10, user11, user12, user13, user14, user15, user16, user17, user18,
                 user19, user20);
+    }
+
+    public UserResponse findUser(UserRequest request) {
+        if (request == null)
+        {
+            return new UserResponse("improper request");
+        }
+        //check through db of users
+        userList.add(user1);
+        userList.add(user2);
+        userList.add(user3);
+        userList.add(user4);
+        userList.add(user5);
+        userList.add(user6);
+        // boolean found = false;
+        User retUser = null;
+        for (int i = 0; i < userList.size(); i++) {
+            if (request.getUserAlias().equals(userList.get(i).getAlias())) {
+                //found = true;
+                retUser = userList.get(i);
+                break;
+            }
+        }
+        //if found, return
+        if (retUser != null) {
+            return new UserResponse(retUser);
+        }
+        else {
+            return new UserResponse("Could not find User");
+        }
+        //else return error
     }
 }

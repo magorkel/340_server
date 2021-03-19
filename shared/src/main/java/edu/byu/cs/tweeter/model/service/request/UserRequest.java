@@ -1,12 +1,14 @@
 package edu.byu.cs.tweeter.model.service.request;
 
 public class UserRequest {
-    private final String userAlias; //to find the User
+    private String userAlias; //to find the User
 
 
     public UserRequest(String userAlias) {
         this.userAlias = userAlias;
     }
+
+    public UserRequest() {}
 
     /**
      * Returns the follower whose followees are to be returned by this request.
@@ -17,4 +19,8 @@ public class UserRequest {
         return userAlias;
     }
 
+    public void setUserAlias(String userAlias)
+    {
+        this.userAlias = userAlias;
+    }
 }

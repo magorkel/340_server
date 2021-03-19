@@ -29,6 +29,15 @@ public class UserResponse extends Response {
         this.user = user;
     }
 
+    public UserResponse() {
+        super(false);
+    }
+
+    public void setUser(User user)
+    {
+        this.user = user;
+    }
+
     /**
      * Returns the followers for the corresponding request.
      *
