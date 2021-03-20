@@ -2,6 +2,7 @@ package edu.byu.cs.tweeter.presenter;
 
 import java.io.IOException;
 
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.service.MakeUnfollowService;
 import edu.byu.cs.tweeter.model.service.request.MakeUnfollowRequest;
 import edu.byu.cs.tweeter.model.service.response.MakeUnfollowResponse;
@@ -28,7 +29,7 @@ public class MakeUnfollowPresenter
      * @param request contains the data required to fulfill the request.
      * @return the followees.
      */
-    public MakeUnfollowResponse sendUnfollowRequest(MakeUnfollowRequest request) throws IOException
+    public MakeUnfollowResponse sendUnfollowRequest(MakeUnfollowRequest request) throws IOException, TweeterRemoteException
     {
         MakeUnfollowService makeUnfollowService = getMakeUnfollowService();
         return makeUnfollowService.sendUnfollowRequest(request);

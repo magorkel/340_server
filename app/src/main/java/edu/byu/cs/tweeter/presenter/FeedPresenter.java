@@ -2,6 +2,7 @@ package edu.byu.cs.tweeter.presenter;
 
 import java.io.IOException;
 
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.service.FeedService;
 import edu.byu.cs.tweeter.model.service.request.FeedRequest;
 import edu.byu.cs.tweeter.model.service.response.FeedResponse;
@@ -34,7 +35,8 @@ public class FeedPresenter extends UserPresenter {
      * @param request contains the data required to fulfill the request.
      * @return the followees.
      */
-    public FeedResponse getFeed(FeedRequest request) throws IOException {
+    public FeedResponse getFeed(FeedRequest request) throws IOException, TweeterRemoteException
+    {
         FeedService feedService = getFeedService();
         return feedService.getFeed(request);
     }

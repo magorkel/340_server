@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.ServerFacade;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.service.request.LoginRequest;
 import edu.byu.cs.tweeter.model.service.response.LoginResponse;
 import edu.byu.cs.tweeter.util.ByteArrayUtils;
@@ -13,7 +14,8 @@ import edu.byu.cs.tweeter.util.ByteArrayUtils;
  */
 public class LoginService {
 
-    public LoginResponse login(LoginRequest request) throws IOException {
+    public LoginResponse login(LoginRequest request) throws IOException, TweeterRemoteException
+    {
         ServerFacade serverFacade = getServerFacade();
         LoginResponse loginResponse = serverFacade.login(request);//register this is where we take pic?
 

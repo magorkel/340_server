@@ -3,6 +3,7 @@ package edu.byu.cs.tweeter.model.service;
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.net.ServerFacade;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.service.request.MakeFollowRequest;
 import edu.byu.cs.tweeter.model.service.request.UserRequest;
 import edu.byu.cs.tweeter.model.service.response.MakeFollowResponse;
@@ -20,7 +21,7 @@ public class MakeFollowService
      * @param request contains the data required to fulfill the request.
      * @return the followees.
      */
-    public MakeFollowResponse sendFollowRequest(MakeFollowRequest request) throws IOException
+    public MakeFollowResponse sendFollowRequest(MakeFollowRequest request) throws IOException, TweeterRemoteException
     {
         MakeFollowResponse response = getServerFacade().updateFollowServer(request);
 

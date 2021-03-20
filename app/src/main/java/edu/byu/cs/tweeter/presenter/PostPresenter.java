@@ -2,6 +2,7 @@ package edu.byu.cs.tweeter.presenter;
 
 import java.io.IOException;
 
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.service.PostService;
 import edu.byu.cs.tweeter.model.service.request.PostRequest;
 import edu.byu.cs.tweeter.model.service.response.PostResponse;
@@ -28,7 +29,7 @@ public class PostPresenter
      * @param request contains the data required to fulfill the request.
      * @return the followees.
      */
-    public PostResponse sendPostRequest (PostRequest request) throws IOException
+    public PostResponse sendPostRequest (PostRequest request) throws IOException, TweeterRemoteException
     {
         PostService postService = getPostService();
         return postService.sendPostRequest(request);

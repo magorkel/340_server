@@ -2,6 +2,7 @@ package edu.byu.cs.tweeter.presenter;
 
 import java.io.IOException;
 
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.service.FollowerService;
 import edu.byu.cs.tweeter.model.service.UserService;
 import edu.byu.cs.tweeter.model.service.request.FollowerRequest;
@@ -25,7 +26,8 @@ public abstract class UserPresenter { //This class isn't initialized, so we will
      * @param request contains the data required to fulfill the request.
      * @return the followees.
      */
-    public UserResponse getUser(UserRequest request) throws IOException {
+    public UserResponse getUser(UserRequest request) throws IOException, TweeterRemoteException
+    {
         UserService userService = getUserService();
         return userService.getUser(request);
     }

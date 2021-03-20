@@ -94,9 +94,10 @@ public class ServerFacade {
     //private User user21 = new User("Billy", "BobJoe", "@billybobjoe", MALE_IMAGE_URL);
 
 
-    public UserResponse findUser(UserRequest request) {
+    public UserResponse findUser(UserRequest request) throws IOException, TweeterRemoteException
+    {
         //check through db of users
-        userList.add(user1);
+        /*userList.add(user1);
         userList.add(user2);
         userList.add(user3);
         userList.add(user4);
@@ -121,7 +122,14 @@ public class ServerFacade {
         else {
             return new UserResponse("Could not find User");
         }
-        //else return error
+        //else return error*/
+        String urlPath = "/getuser";
+        UserResponse response = clientCommunicator.doPost(urlPath, request, null, UserResponse.class);
+        if(response.isSuccess()) {
+            return response;
+        } else {
+            throw new RuntimeException(response.getMessage());
+        }
     }
 
     /**
@@ -132,9 +140,10 @@ public class ServerFacade {
      * @param request contains all information needed to perform a login.
      * @return the login response.
      */
-    public LoginResponse login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request) throws IOException, TweeterRemoteException
+    {
         //Check and verify that password is correct
-        if (request.getPassword().equals("tempPass")) {
+        /*if (request.getPassword().equals("tempPass")) {
             User user = new User("Test", "User",
                     "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
             return new LoginResponse(user, new AuthToken());
@@ -142,6 +151,13 @@ public class ServerFacade {
         else {
             //Failed to find password
             return new LoginResponse("Could not find Password =(");
+        }*/
+        String urlPath = "/login";
+        LoginResponse response = clientCommunicator.doPost(urlPath, request, null, LoginResponse.class);
+        if(response.isSuccess()) {
+            return response;
+        } else {
+            throw new RuntimeException(response.getMessage());
         }
     }
 
@@ -211,21 +227,42 @@ public class ServerFacade {
 
     }
 
-    public MakeFollowResponse updateFollowServer(MakeFollowRequest request)
+    public MakeFollowResponse updateFollowServer(MakeFollowRequest request) throws IOException, TweeterRemoteException
     {
         //pull out two users and update their lists
-        return new MakeFollowResponse(true,"successfully followed");
+        //return new MakeFollowResponse(true,"successfully followed");
+        String urlPath = "/getmakefollow";
+        MakeFollowResponse response = clientCommunicator.doPost(urlPath, request, null, MakeFollowResponse.class);
+        if(response.isSuccess()) {
+            return response;
+        } else {
+            throw new RuntimeException(response.getMessage());
+        }
     }
 
-    public MakeUnfollowResponse updateUnfollowServer(MakeUnfollowRequest request)
+    public MakeUnfollowResponse updateUnfollowServer(MakeUnfollowRequest request) throws IOException, TweeterRemoteException
     {
-        return new MakeUnfollowResponse(true,"successfully unfollowed");
+        //return new MakeUnfollowResponse(true,"successfully unfollowed");
+        String urlPath = "/getmakeunfollow";
+        MakeUnfollowResponse response = clientCommunicator.doPost(urlPath, request, null, MakeUnfollowResponse.class);
+        if(response.isSuccess()) {
+            return response;
+        } else {
+            throw new RuntimeException(response.getMessage());
+        }
     }
 
-    public PostResponse updatePostServer(PostRequest request)
+    public PostResponse updatePostServer(PostRequest request) throws IOException, TweeterRemoteException
     {
         //add to feed and story
-        return new PostResponse(true, "successfully posted");
+        //return new PostResponse(true, "successfully posted");
+        String urlPath = "/getpost";
+        PostResponse response = clientCommunicator.doPost(urlPath, request, null, PostResponse.class);
+        if(response.isSuccess()) {
+            return response;
+        } else {
+            throw new RuntimeException(response.getMessage());
+        }
     }
 
     public LogoutResponse logout(LogoutRequest request)
@@ -399,7 +436,8 @@ public class ServerFacade {
     }
 
     //Story starts here---------------------------------------------------------------------------------------------------------------------
-    public StoryResponse getStory(StoryRequest request) {
+    public StoryResponse getStory(StoryRequest request) throws IOException, TweeterRemoteException
+    {
 
         // Used in place of assert statements because Android does not support them
         if(BuildConfig.DEBUG) {
@@ -428,6 +466,13 @@ public class ServerFacade {
         }
 
         return new StoryResponse(responseStatuses, hasMorePages);
+        /*String urlPath = "/getstory";
+        StoryResponse response = clientCommunicator.doPost(urlPath, request, null, StoryResponse.class);
+        if(response.isSuccess()) {
+            return response;
+        } else {
+            throw new RuntimeException(response.getMessage());
+        }*/
     }
 
     private int getStatusStartingIndex(Status lastStatus, List<Status> allStatuses) {//getstatusstartingindex     string alias is a status
@@ -456,7 +501,8 @@ public class ServerFacade {
 
 
     //Feed starts here---------------------------------------------------------------------------------------------------------------------
-    public FeedResponse getFeed(FeedRequest request) {
+    public FeedResponse getFeed(FeedRequest request) throws IOException, TweeterRemoteException
+    {
 
         // Used in place of assert statements because Android does not support them
         if(BuildConfig.DEBUG) {
@@ -485,6 +531,13 @@ public class ServerFacade {
         }
 
         return new FeedResponse(responseStatuses, hasMorePages);
+        /*String urlPath = "/getfeed";
+        FeedResponse response = clientCommunicator.doPost(urlPath, request, null, FeedResponse.class);
+        if(response.isSuccess()) {
+            return response;
+        } else {
+            throw new RuntimeException(response.getMessage());
+        }*/
     }
 
     private int getFeedStartingIndex(Status lastStatus, List<Status> allStatuses) {//getstatusstartingindex     string alias is a status
