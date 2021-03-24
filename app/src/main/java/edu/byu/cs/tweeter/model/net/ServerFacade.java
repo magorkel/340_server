@@ -157,7 +157,8 @@ public class ServerFacade {
         if(response.isSuccess()) {
             return response;
         } else {
-            throw new RuntimeException(response.getMessage());
+            return response;
+            //throw new RuntimeException(response.getMessage());
         }
     }
 
@@ -236,7 +237,8 @@ public class ServerFacade {
             response.getUser().setImageUrl("");
             return response;
         } else {
-            throw new RuntimeException(response.getMessage());
+            return response;
+            //throw new RuntimeException(response.getMessage());
         }
 
     }
@@ -291,7 +293,8 @@ public class ServerFacade {
         if(response.isSuccess()) {
             return response;
         } else {
-            throw new RuntimeException(response.getMessage());
+            return response;
+            //throw new RuntimeException(response.getMessage());
         }
 
         //return new LogoutResponse(true, "successfully logged out");

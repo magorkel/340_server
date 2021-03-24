@@ -5,27 +5,24 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
+import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.model.net.ServerFacade;
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
-import edu.byu.cs.tweeter.model.service.FeedServiceProxy;
-import edu.byu.cs.tweeter.model.service.request.FeedRequest;
-import edu.byu.cs.tweeter.model.service.request.StoryRequest;
-import edu.byu.cs.tweeter.model.service.response.FeedResponse;
-import edu.byu.cs.tweeter.model.service.response.StoryResponse;
+import edu.byu.cs.tweeter.model.service.PostServiceProxy;
+import edu.byu.cs.tweeter.model.service.request.PostRequest;
+import edu.byu.cs.tweeter.model.service.response.PostResponse;
 
-public class FeedServiceProxyTest
+public class PostServiceProxyTest
 {
-    FeedServiceProxy feedServiceProxy;
+    PostServiceProxy postServiceProxy;
 
-    FeedRequest passRequest;
-    FeedRequest failRequest;
+    PostRequest passRequest;
+    PostRequest failRequest;
 
-    FeedResponse passResponse;
-    FeedResponse failResponse;
+    PostResponse passResponse;
+    PostResponse failResponse;
 
     @BeforeEach
     public void setup() throws IOException, TweeterRemoteException
@@ -47,40 +44,29 @@ public class FeedServiceProxyTest
         Status stat3 = new Status("hello content3", user1, "Wednesday, June 22, 2021");
         Status stat4 = new Status("hello content4", user1, "Thursday, January 4, 2021");
 
-        ArrayList<Status> statuses = new ArrayList<Status>();
-        statuses.add(stat1);
-        statuses.add(stat2);
-        statuses.add(stat3);
-        statuses.add(stat4);
-        statuses.add(stat1);
-        statuses.add(stat2);
-        statuses.add(stat3);
-        statuses.add(stat4);
-        statuses.add(stat1);
-        statuses.add(stat2);
 
-        feedServiceProxy = new FeedServiceProxy();
+        postServiceProxy = new PostServiceProxy();
 
-        passRequest = new FeedRequest("james", 10, stat1);
-        failRequest = new FeedRequest(null, 0, null);
+        passRequest = new PostRequest(stat1);
+        failRequest = new PostRequest(null);
 
-        passResponse = new FeedResponse(statuses,false);
-        failResponse = new FeedResponse(null);
+        passResponse = new PostResponse(true);
+        failResponse = new PostResponse(true);
     }
     //pass test
     @Test
     public void passTest() throws IOException, TweeterRemoteException
     {
-        FeedResponse test = feedServiceProxy.getFeed(passRequest);
+        PostResponse test = postServiceProxy.updatePostServer(passRequest);
 
-        Assertions.assertEquals(test.getMessage(), passResponse.getMessage());
+        Assertions.assertEquals(test.isSuccess(), passResponse.isSuccess());
     }
     //fail test
     @Test
     public void failTest() throws IOException, TweeterRemoteException
     {
-        FeedResponse test = feedServiceProxy.getFeed(failRequest);
+        PostResponse test = postServiceProxy.updatePostServer(failRequest);
 
-        Assertions.assertEquals(test.getMessage(), failResponse.getMessage());
+        Assertions.assertEquals(test.isSuccess(), failResponse.isSuccess());
     }
 }

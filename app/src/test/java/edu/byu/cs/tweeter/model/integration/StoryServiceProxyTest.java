@@ -9,23 +9,20 @@ import java.util.ArrayList;
 
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.model.net.ServerFacade;
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
-import edu.byu.cs.tweeter.model.service.FeedServiceProxy;
-import edu.byu.cs.tweeter.model.service.request.FeedRequest;
+import edu.byu.cs.tweeter.model.service.StoryServiceProxy;
 import edu.byu.cs.tweeter.model.service.request.StoryRequest;
-import edu.byu.cs.tweeter.model.service.response.FeedResponse;
 import edu.byu.cs.tweeter.model.service.response.StoryResponse;
 
-public class FeedServiceProxyTest
+public class StoryServiceProxyTest
 {
-    FeedServiceProxy feedServiceProxy;
+    StoryServiceProxy storyServiceProxy;
 
-    FeedRequest passRequest;
-    FeedRequest failRequest;
+    StoryRequest passRequest;
+    StoryRequest failRequest;
 
-    FeedResponse passResponse;
-    FeedResponse failResponse;
+    StoryResponse passResponse;
+    StoryResponse failResponse;
 
     @BeforeEach
     public void setup() throws IOException, TweeterRemoteException
@@ -59,28 +56,28 @@ public class FeedServiceProxyTest
         statuses.add(stat1);
         statuses.add(stat2);
 
-        feedServiceProxy = new FeedServiceProxy();
+        storyServiceProxy = new StoryServiceProxy();
 
-        passRequest = new FeedRequest("james", 10, stat1);
-        failRequest = new FeedRequest(null, 0, null);
+        passRequest = new StoryRequest("james", 10, stat1);
+        failRequest = new StoryRequest(null, 0, null);
 
-        passResponse = new FeedResponse(statuses,false);
-        failResponse = new FeedResponse(null);
+        passResponse = new StoryResponse(statuses,true);
+        failResponse = new StoryResponse(statuses, false);
     }
     //pass test
     @Test
     public void passTest() throws IOException, TweeterRemoteException
     {
-        FeedResponse test = feedServiceProxy.getFeed(passRequest);
+        StoryResponse test = storyServiceProxy.getStory(passRequest);
 
-        Assertions.assertEquals(test.getMessage(), passResponse.getMessage());
+        Assertions.assertEquals(test.isSuccess(), passResponse.isSuccess());
     }
     //fail test
     @Test
     public void failTest() throws IOException, TweeterRemoteException
     {
-        FeedResponse test = feedServiceProxy.getFeed(failRequest);
+        StoryResponse test = storyServiceProxy.getStory(failRequest);
 
-        Assertions.assertEquals(test.getMessage(), failResponse.getMessage());
+        Assertions.assertEquals(test.isSuccess(), failResponse.isSuccess());
     }
 }

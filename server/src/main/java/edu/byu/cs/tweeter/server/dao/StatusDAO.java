@@ -40,13 +40,13 @@ public class StatusDAO {
                 throw new AssertionError();
             }
         }*/
-        if (request.getUsername() != null)
+        /*if (request.getUsername() != null)
         {
             if (request.getUsername().equals("fail now"))
             {
                 return new FeedResponse("Fail");
             }
-        }
+        }*/
         List<Status> allStatuses = getDummyStatuses();
         List<Status> responseStatuses = new ArrayList<>(request.getLimit());
         boolean hasMorePages = false;

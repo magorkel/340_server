@@ -10,7 +10,7 @@ public class StoryResponse extends PagedResponse
 
     public StoryResponse(String message)
     {
-        super(false, message, false);
+        //super(false, message, false);
     }
 
     public StoryResponse(List<Status> posts, boolean hasMorePages)
