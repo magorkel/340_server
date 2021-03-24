@@ -11,6 +11,7 @@ import java.util.Arrays;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.ServerFacade;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.service.request.StoryRequest;
 import edu.byu.cs.tweeter.model.service.response.StoryResponse;
 
@@ -22,14 +23,15 @@ public class StoryServiceTest
     private StoryResponse successResponse;
     private StoryResponse failureResponse;
 
-    private StoryService storyServiceSpy;
+    private StoryServiceProxy storyServiceSpy;
 
     /**
      * Create a StoryService spy that uses a mock ServerFacade to return known responses to
      * requests.
      */
     @BeforeEach
-    public void setup() {
+    public void setup() throws IOException, TweeterRemoteException
+    {
         User currentUser = new User("FirstName", "LastName", null);
 
         User resultUser1 = new User("FirstName1", "LastName1",
@@ -56,46 +58,49 @@ public class StoryServiceTest
         Mockito.when(mockServerFacade.getStory(invalidRequest)).thenReturn(failureResponse);
 
         // Create a StoryService instance and wrap it with a spy that will use the mock service
-        storyServiceSpy = Mockito.spy(new StoryService());
+        storyServiceSpy = Mockito.spy(new StoryServiceProxy());
         Mockito.when(storyServiceSpy.getServerFacade()).thenReturn(mockServerFacade);
     }
 
     /**
-     * Verify that for successful requests the {@link StoryService#getStory(StoryRequest)}
+     * Verify that for successful requests the {@link StoryServiceProxy#getStory(StoryRequest)}
      * method returns the same result as the {@link ServerFacade}.
      * .
      *
      * @throws IOException if an IO error occurs.
      */
     @Test
-    public void testGetStory_validRequest_correctResponse() throws IOException {
+    public void testGetStory_validRequest_correctResponse() throws IOException, TweeterRemoteException
+    {
         StoryResponse response = storyServiceSpy.getStory(validRequest);
         Assertions.assertEquals(successResponse, response);
     }
 
     /**
-     * Verify that the {@link StoryService#getStory(StoryRequest)} method loads the
+     * Verify that the {@link StoryServiceProxy#getStory(StoryRequest)} method loads the
      * profile image of each user included in the result.
      *
      * @throws IOException if an IO error occurs.
      */
     @Test
-    public void testGetStory_validRequest_loadsProfileImages() throws IOException {
+    public void testGetStory_validRequest_loadsProfileImages() throws IOException, TweeterRemoteException
+    {
         StoryResponse response = storyServiceSpy.getStory(validRequest);
 
-        for(Status status : response.getStory()) {
+        for(Status status : response.getPosts()) {
             Assertions.assertNotNull(status.getContent());
         }
     }
 
     /**
-     * Verify that for failed requests the {@link StoryService#getStory(StoryRequest)}
+     * Verify that for failed requests the {@link StoryServiceProxy#getStory(StoryRequest)}
      * method returns the same result as the {@link ServerFacade}.
      *
      * @throws IOException if an IO error occurs.
      */
     @Test
-    public void testGetStory_invalidRequest_returnsNoStory() throws IOException {
+    public void testGetStory_invalidRequest_returnsNoStory() throws IOException, TweeterRemoteException
+    {
         StoryResponse response = storyServiceSpy.getStory(invalidRequest);
         Assertions.assertEquals(failureResponse, response);
     }

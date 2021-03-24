@@ -6,22 +6,23 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.model.service.MakeFollowService;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
+import edu.byu.cs.tweeter.model.service.MakeFollowServiceProxy;
 import edu.byu.cs.tweeter.model.service.request.MakeFollowRequest;
 import edu.byu.cs.tweeter.model.service.response.MakeFollowResponse;
 
 public class MakeFollowPresenterTest {
     private MakeFollowRequest request;
     private MakeFollowResponse response;
-    private MakeFollowService mockMakeFollowService;
+    private MakeFollowServiceProxy mockMakeFollowService;
     private MakeFollowPresenter presenter;
 
     @BeforeEach
-    public void setup() throws IOException {
+    public void setup() throws IOException, TweeterRemoteException
+    {
         User currentUser = new User("FirstName", "LastName", null);
 
         User resultUser1 = new User("FirstName1", "LastName1",
@@ -39,8 +40,8 @@ public class MakeFollowPresenterTest {
         response = new MakeFollowResponse(true, "successfully followed");
 
         // Create a mock MakeFollowService
-        mockMakeFollowService = Mockito.mock(MakeFollowService.class);
-        Mockito.when(mockMakeFollowService.sendFollowRequest(request)).thenReturn(response);
+        mockMakeFollowService = Mockito.mock(MakeFollowServiceProxy.class);
+        Mockito.when(mockMakeFollowService.updateFollowServer(request)).thenReturn(response);
 
         // Wrap a MakeFollowPresenter in a spy that will use the mock service.
         presenter = Mockito.spy(new MakeFollowPresenter(new MakeFollowPresenter.View() {}));
@@ -48,8 +49,9 @@ public class MakeFollowPresenterTest {
     }
 
     @Test
-    public void testGetMakeFollow_returnsServiceResult() throws IOException {
-        Mockito.when(mockMakeFollowService.sendFollowRequest(request)).thenReturn(response);
+    public void testGetMakeFollow_returnsServiceResult() throws IOException, TweeterRemoteException
+    {
+        Mockito.when(mockMakeFollowService.updateFollowServer(request)).thenReturn(response);
 
         // Assert that the presenter returns the same response as the service (it doesn't do
         // anything else, so there's nothing else to test).
@@ -57,8 +59,9 @@ public class MakeFollowPresenterTest {
     }
 
     @Test
-    public void testGetMakeFollow_serviceThrowsIOException_presenterThrowsIOException() throws IOException {
-        Mockito.when(mockMakeFollowService.sendFollowRequest(request)).thenThrow(new IOException());
+    public void testGetMakeFollow_serviceThrowsIOException_presenterThrowsIOException() throws IOException, TweeterRemoteException
+    {
+        Mockito.when(mockMakeFollowService.updateFollowServer(request)).thenThrow(new IOException());
 
         Assertions.assertThrows(IOException.class, () -> {
             presenter.sendFollowRequest(request);

@@ -10,8 +10,8 @@ public class AuthTokenDAO
     public AuthToken createAuthToken(String userName)
     {
         //create a new random authToken and add it to the table associated with the userName
-        AuthToken authToken = new AuthToken("hi");
-        //AuthToken authToken = new AuthToken();
+        //AuthToken authToken = new AuthToken("hi");
+        AuthToken authToken = new AuthToken();
         return authToken;
     }
 
@@ -21,7 +21,7 @@ public class AuthTokenDAO
         return true;
     }
 
-    public boolean deleteAuthToken(AuthToken authToken)
+    public boolean deleteAuthToken(String userName) //FIXME does this need to be an authToken?
     {
         //will it take in an AuthToken or a username
         return true;

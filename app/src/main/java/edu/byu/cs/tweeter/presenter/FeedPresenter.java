@@ -3,7 +3,7 @@ package edu.byu.cs.tweeter.presenter;
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
-import edu.byu.cs.tweeter.model.service.FeedService;
+import edu.byu.cs.tweeter.model.service.FeedServiceProxy;
 import edu.byu.cs.tweeter.model.service.request.FeedRequest;
 import edu.byu.cs.tweeter.model.service.response.FeedResponse;
 
@@ -37,18 +37,18 @@ public class FeedPresenter extends UserPresenter {
      */
     public FeedResponse getFeed(FeedRequest request) throws IOException, TweeterRemoteException
     {
-        FeedService feedService = getFeedService();
+        FeedServiceProxy feedService = getFeedService();
         return feedService.getFeed(request);
     }
 
     /**
-     * Returns an instance of {@link FeedService}. Allows mocking of the FollowingService class
+     * Returns an instance of {@link FeedServiceProxy}. Allows mocking of the FollowingService class
      * for testing purposes. All usages of FollowingService should get their FollowingService
      * instance from this method to allow for mocking of the instance.
      *
      * @return the instance.
      */
-    FeedService getFeedService() {
-        return new FeedService();
+    FeedServiceProxy getFeedService() {
+        return new FeedServiceProxy();
     }
 }

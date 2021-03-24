@@ -20,6 +20,18 @@ public class Story
         this.username = username;
     }
 
+    public Story(){}
+
+    public void setPosts(List<Status> posts)
+    {
+        this.posts = posts;
+    }
+
+    public void setUsername(String username)
+    {
+        this.username = username;
+    }
+
     public void setPost(Status post) { posts.add(post); }
     public List<Status> getPosts() { return posts; }
     public String getUsername() { return username; }

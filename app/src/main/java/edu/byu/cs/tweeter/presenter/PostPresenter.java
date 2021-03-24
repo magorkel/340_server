@@ -3,7 +3,7 @@ package edu.byu.cs.tweeter.presenter;
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
-import edu.byu.cs.tweeter.model.service.PostService;
+import edu.byu.cs.tweeter.model.service.PostServiceProxy;
 import edu.byu.cs.tweeter.model.service.request.PostRequest;
 import edu.byu.cs.tweeter.model.service.response.PostResponse;
 
@@ -31,18 +31,18 @@ public class PostPresenter
      */
     public PostResponse sendPostRequest (PostRequest request) throws IOException, TweeterRemoteException
     {
-        PostService postService = getPostService();
-        return postService.sendPostRequest(request);
+        PostServiceProxy postService = getPostService();
+        return postService.updatePostServer(request);
     }
 
     /**
-     * Returns an instance of {@link PostService}. Allows mocking of the FollowingService class
+     * Returns an instance of {@link PostServiceProxy}. Allows mocking of the FollowingService class
      * for testing purposes. All usages of FollowingService should get their FollowingService
      * instance from this method to allow for mocking of the instance.
      *
      * @return the instance.
      */
-    PostService getPostService() {
-        return new PostService();
+    PostServiceProxy getPostService() {
+        return new PostServiceProxy();
     }
 }

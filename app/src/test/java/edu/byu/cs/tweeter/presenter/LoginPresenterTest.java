@@ -6,23 +6,23 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.model.service.LoginService;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
+import edu.byu.cs.tweeter.model.service.LoginServiceProxy;
 import edu.byu.cs.tweeter.model.service.request.LoginRequest;
 import edu.byu.cs.tweeter.model.service.response.LoginResponse;
 
 public class LoginPresenterTest {
     private LoginRequest request;
     private LoginResponse response;
-    private LoginService mockLoginService;
+    private LoginServiceProxy mockLoginService;
     private LoginPresenter presenter;
 
     @BeforeEach
-    public void setup() throws IOException {
+    public void setup() throws IOException, TweeterRemoteException
+    {
         User currentUser = new User("FirstName", "LastName", null);
 
         User resultUser1 = new User("FirstName1", "LastName1",
@@ -39,7 +39,7 @@ public class LoginPresenterTest {
         response = new LoginResponse(testUser, new AuthToken());
 
         // Create a mock LoginService
-        mockLoginService = Mockito.mock(LoginService.class);
+        mockLoginService = Mockito.mock(LoginServiceProxy.class);
         Mockito.when(mockLoginService.login(request)).thenReturn(response);
 
         // Wrap a LoginPresenter in a spy that will use the mock service.
@@ -48,7 +48,8 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void testGetLogin_returnsServiceResult() throws IOException {
+    public void testGetLogin_returnsServiceResult() throws IOException, TweeterRemoteException
+    {
         Mockito.when(mockLoginService.login(request)).thenReturn(response);
 
         // Assert that the presenter returns the same response as the service (it doesn't do
@@ -61,7 +62,8 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void testGetLogin_serviceThrowsIOException_presenterThrowsIOException() throws IOException {
+    public void testGetLogin_serviceThrowsIOException_presenterThrowsIOException() throws IOException, TweeterRemoteException
+    {
         Mockito.when(mockLoginService.login(request)).thenThrow(new IOException());
 
         Assertions.assertThrows(IOException.class, () -> {

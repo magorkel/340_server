@@ -21,6 +21,23 @@ public class Status implements Comparable<Status>, Serializable
         //parseContent(content);
     }
 
+    public Status(){}
+
+    public void setContent(String content)
+    {
+        this.content = content;
+    }
+
+    public void setUser(User user)
+    {
+        this.user = user;
+    }
+
+    public void setTime(String time)
+    {
+        this.time = time;
+    }
+
     /*public void parseContent(String content) {
         String delims = "[ ]+";
         String[] tokens = content.split(delims);

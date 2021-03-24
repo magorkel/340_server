@@ -5,15 +5,14 @@ import java.io.IOException;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.ServerFacade;
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
-import edu.byu.cs.tweeter.model.service.request.FollowingRequest;
-import edu.byu.cs.tweeter.model.service.response.FollowingResponse;
+import edu.byu.cs.tweeter.model.service.request.FollowerRequest;
+import edu.byu.cs.tweeter.model.service.request.UserRequest;
+import edu.byu.cs.tweeter.model.service.response.FollowerResponse;
+import edu.byu.cs.tweeter.model.service.response.UserResponse;
 import edu.byu.cs.tweeter.util.ByteArrayUtils;
 
-/**
- * Contains the business logic for getting the users a user is following.
- */
-public class FollowingService {
-
+public class UserServiceProxy implements UserService
+{
     /**
      * Returns the users that the user specified in the request is following. Uses information in
      * the request object to limit the number of followees returned and to return the next set of
@@ -23,9 +22,9 @@ public class FollowingService {
      * @param request contains the data required to fulfill the request.
      * @return the followees.
      */
-    public FollowingResponse getFollowees(FollowingRequest request) throws IOException, TweeterRemoteException
+    public UserResponse getUser(UserRequest request) throws IOException, TweeterRemoteException
     {
-        FollowingResponse response = getServerFacade().getFollowees(request);
+        UserResponse response = getServerFacade().findUser(request);
 
         if(response.isSuccess()) {
             loadImages(response);
@@ -38,12 +37,10 @@ public class FollowingService {
      * Loads the profile image data for each followee included in the response.
      *
      * @param response the response from the followee request.
-     */
-    private void loadImages(FollowingResponse response) throws IOException {
-        for(User user : response.getFollowees()) {
-            byte [] bytes = ByteArrayUtils.bytesFromUrl(user.getImageUrl());
-            user.setImageBytes(bytes);
-        }
+     */ //FIXME: Add checking to confirm that url is existant before running this, else grab directly from url.
+    private void loadImages(UserResponse response) throws IOException {
+        byte [] bytes = ByteArrayUtils.bytesFromUrl(response.getUser().getImageUrl());
+        response.getUser().setImageBytes(bytes);
     }
 
     /**

@@ -2,14 +2,12 @@ package edu.byu.cs.tweeter.model.service;
 
 import java.io.IOException;
 
-import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.ServerFacade;
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
-import edu.byu.cs.tweeter.model.service.request.FollowerRequest;
-import edu.byu.cs.tweeter.model.service.response.FollowerResponse;
-import edu.byu.cs.tweeter.util.ByteArrayUtils;
+import edu.byu.cs.tweeter.model.service.request.MakeUnfollowRequest;
+import edu.byu.cs.tweeter.model.service.response.MakeUnfollowResponse;
 
-public class FollowerService
+public class MakeUnfollowServiceProxy implements MakeUnfollowService
 {
     /**
      * Returns the users that the user specified in the request is following. Uses information in
@@ -20,13 +18,14 @@ public class FollowerService
      * @param request contains the data required to fulfill the request.
      * @return the followees.
      */
-    public FollowerResponse getFollowers(FollowerRequest request) throws IOException, TweeterRemoteException
+    public MakeUnfollowResponse updateUnfollowServer(MakeUnfollowRequest request) throws IOException, TweeterRemoteException
     {
-        FollowerResponse response = getServerFacade().getFollowers(request);
+        MakeUnfollowResponse response = getServerFacade().updateUnfollowServer(request);
 
-        if(response.isSuccess()) {
-            loadImages(response);
-        }
+        /*if(response.isSuccess()) {
+            //loadImages(response);
+            return respon
+        }*/
 
         return response;
     }
@@ -35,13 +34,11 @@ public class FollowerService
      * Loads the profile image data for each followee included in the response.
      *
      * @param response the response from the followee request.
-     */
-    private void loadImages(FollowerResponse response) throws IOException {
-        for(User user : response.getFollowers()) {
-            byte [] bytes = ByteArrayUtils.bytesFromUrl(user.getImageUrl());
-            user.setImageBytes(bytes);
-        }
-    }
+     */ //FIXME: Add checking to confirm that url is existant before running this, else grab directly from url.
+    /*private void loadImages(UserResponse response) throws IOException {
+        byte [] bytes = ByteArrayUtils.bytesFromUrl(response.getUser().getImageUrl());
+        response.getUser().setImageBytes(bytes);
+    }*/
 
     /**
      * Returns an instance of {@link ServerFacade}. Allows mocking of the ServerFacade class for

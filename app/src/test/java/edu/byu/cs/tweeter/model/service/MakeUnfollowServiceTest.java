@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.ServerFacade;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.service.request.MakeUnfollowRequest;
 import edu.byu.cs.tweeter.model.service.response.MakeUnfollowResponse;
 
@@ -20,14 +21,15 @@ public class MakeUnfollowServiceTest
     private MakeUnfollowResponse successResponse;
     private MakeUnfollowResponse failureResponse;
 
-    private MakeUnfollowService makeUnfollowServiceSpy;
+    private MakeUnfollowServiceProxy makeUnfollowServiceSpy;
 
     /**
      * Create a MakeUnfollowService spy that uses a mock ServerFacade to return known responses to
      * requests.
      */
     @BeforeEach
-    public void setup() {
+    public void setup() throws IOException, TweeterRemoteException
+    {
         User currentUser = new User("FirstName", "LastName", null);
 
         User resultUser1 = new User("FirstName1", "LastName1",
@@ -50,25 +52,26 @@ public class MakeUnfollowServiceTest
         Mockito.when(mockServerFacade.updateUnfollowServer(invalidRequest)).thenReturn(failureResponse);
 
         // Create a MakeUnfollowService instance and wrap it with a spy that will use the mock service
-        makeUnfollowServiceSpy = Mockito.spy(new MakeUnfollowService());
+        makeUnfollowServiceSpy = Mockito.spy(new MakeUnfollowServiceProxy());
         Mockito.when(makeUnfollowServiceSpy.getServerFacade()).thenReturn(mockServerFacade);
     }
 
     /**
-     * Verify that for successful requests the {@link MakeUnfollowService#sendUnfollowRequest(MakeUnfollowRequest)}
+     * Verify that for successful requests the {@link MakeUnfollowServiceProxy#updateUnfollowServer(MakeUnfollowRequest)}
      * method returns the same result as the {@link ServerFacade}.
      * .
      *
      * @throws IOException if an IO error occurs.
      */
     @Test
-    public void testGetUnfollowees_validRequest_correctResponse() throws IOException {
-        MakeUnfollowResponse response = makeUnfollowServiceSpy.sendUnfollowRequest(validRequest);
+    public void testGetUnfollowees_validRequest_correctResponse() throws IOException, TweeterRemoteException
+    {
+        MakeUnfollowResponse response = makeUnfollowServiceSpy.updateUnfollowServer(validRequest);
         Assertions.assertEquals(successResponse, response);
     }
 
     /**
-     * Verify that the {@link MakeUnfollowService#sendUnfollowRequest(MakeUnfollowRequest)} method loads the
+     * Verify that the {@link MakeUnfollowServiceProxy#updateUnfollowServer(MakeUnfollowRequest)} method loads the
      * profile image of each user included in the result.
      *
      * @throws IOException if an IO error occurs.
@@ -84,14 +87,15 @@ public class MakeUnfollowServiceTest
     }*/
 
     /**
-     * Verify that for failed requests the {@link MakeUnfollowService#sendUnfollowRequest(MakeUnfollowRequest)}
+     * Verify that for failed requests the {@link MakeUnfollowServiceProxy#updateUnfollowServer(MakeUnfollowRequest)}
      * method returns the same result as the {@link ServerFacade}.
      *
      * @throws IOException if an IO error occurs.
      */
     @Test
-    public void testGetUnfollow_invalidRequest_returnsUnfollow() throws IOException {
-        MakeUnfollowResponse response = makeUnfollowServiceSpy.sendUnfollowRequest(invalidRequest);
+    public void testGetUnfollow_invalidRequest_returnsUnfollow() throws IOException, TweeterRemoteException
+    {
+        MakeUnfollowResponse response = makeUnfollowServiceSpy.updateUnfollowServer(invalidRequest);
         Assertions.assertEquals(failureResponse, response);
     }
 }

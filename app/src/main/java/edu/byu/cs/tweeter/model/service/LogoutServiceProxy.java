@@ -3,10 +3,11 @@ package edu.byu.cs.tweeter.model.service;
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.net.ServerFacade;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.service.request.LogoutRequest;
 import edu.byu.cs.tweeter.model.service.response.LogoutResponse;
 
-public class LogoutService
+public class LogoutServiceProxy implements LogoutService
 {
     /**
      * Returns the users that the user specified in the request is following. Uses information in
@@ -17,7 +18,7 @@ public class LogoutService
      * @param request contains the data required to fulfill the request.
      * @return the followees.
      */
-    public LogoutResponse sendLogoutRequest(LogoutRequest request) throws IOException
+    public LogoutResponse getLogout(LogoutRequest request) throws IOException, TweeterRemoteException
     {
         LogoutResponse response = getServerFacade().logout(request);
 

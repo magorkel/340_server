@@ -38,7 +38,6 @@ import edu.byu.cs.tweeter.presenter.FeedPresenter;
 import edu.byu.cs.tweeter.view.asyncTasks.GetFeedTask;
 import edu.byu.cs.tweeter.view.asyncTasks.GetUserTask;
 import edu.byu.cs.tweeter.view.main.OtherUserActivity;
-import edu.byu.cs.tweeter.view.main.story.StoryFragment;
 import edu.byu.cs.tweeter.view.util.ImageUtils;
 
 public class FeedFragment extends Fragment implements FeedPresenter.View, GetUserTask.Observer {
@@ -416,7 +415,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.View, GetUse
          */
         @Override
         public void feedRetrieved(FeedResponse feedResponse) {
-            List<Status> feed = feedResponse.getFeed();
+            List<Status> feed = feedResponse.getPosts();
 
             lastFeed = (feed.size() > 0) ? feed.get(feed.size() -1) : null;
             hasMorePages = feedResponse.getHasMorePages();

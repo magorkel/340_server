@@ -22,7 +22,7 @@ public class FeedResponse extends PagedResponse
 
     public FeedResponse()
     {
-        super(false, "test", false);
+        //super(false, "test", false);
 
     }
 
@@ -31,7 +31,7 @@ public class FeedResponse extends PagedResponse
         this.posts = posts;
     }
 
-    public List<Status> getFeed() { return posts; }
+    public List<Status> getPosts() { return posts; }
 
     @Override
     public boolean equals(Object param) {

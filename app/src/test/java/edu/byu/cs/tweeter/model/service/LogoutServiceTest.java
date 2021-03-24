@@ -7,9 +7,9 @@ import org.mockito.Mockito;
 
 import java.io.IOException;
 
-import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.ServerFacade;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.service.request.LogoutRequest;
 import edu.byu.cs.tweeter.model.service.response.LogoutResponse;
 
@@ -21,14 +21,15 @@ public class LogoutServiceTest
     private LogoutResponse successResponse;
     private LogoutResponse failureResponse;
 
-    private LogoutService logoutServiceSpy;
+    private LogoutServiceProxy logoutServiceSpy;
 
     /**
      * Create a LogoutService spy that uses a mock ServerFacade to return known responses to
      * requests.
      */
     @BeforeEach
-    public void setup() {
+    public void setup() throws IOException, TweeterRemoteException
+    {
         //User currentUser = new User("FirstName", "LastName", null);
 
         User resultUser1 = new User("FirstName1", "LastName1",
@@ -56,32 +57,34 @@ public class LogoutServiceTest
         Mockito.when(mockServerFacade.logout(invalidRequest)).thenReturn(failureResponse);
 
         // Create a LogoutService instance and wrap it with a spy that will use the mock service
-        logoutServiceSpy = Mockito.spy(new LogoutService());
+        logoutServiceSpy = Mockito.spy(new LogoutServiceProxy());
         Mockito.when(logoutServiceSpy.getServerFacade()).thenReturn(mockServerFacade);
     }
 
     /**
-     * Verify that for successful requests the {@link LogoutService#sendLogoutRequest(LogoutRequest)}
+     * Verify that for successful requests the {@link LogoutServiceProxy#getLogout(LogoutRequest)}
      * method returns the same result as the {@link ServerFacade}.
      * .
      *
      * @throws IOException if an IO error occurs.
      */
     @Test
-    public void testGetLogout_validRequest_correctResponse() throws IOException {
-        LogoutResponse response = logoutServiceSpy.sendLogoutRequest(validRequest);
+    public void testGetLogout_validRequest_correctResponse() throws IOException, TweeterRemoteException
+    {
+        LogoutResponse response = logoutServiceSpy.getLogout(validRequest);
         Assertions.assertEquals(successResponse, response);
     }
 
     /**
-     * Verify that for failed requests the {@link LogoutService#sendLogoutRequest(LogoutRequest)}
+     * Verify that for failed requests the {@link LogoutServiceProxy#getLogout(LogoutRequest)}
      * method returns the same result as the {@link ServerFacade}.
      *
      * @throws IOException if an IO error occurs.
      */
     @Test
-    public void testGetLogout_invalidRequest_returnsNoLogout() throws IOException {
-        LogoutResponse response = logoutServiceSpy.sendLogoutRequest(invalidRequest);
+    public void testGetLogout_invalidRequest_returnsNoLogout() throws IOException, TweeterRemoteException
+    {
+        LogoutResponse response = logoutServiceSpy.getLogout(invalidRequest);
         Assertions.assertEquals(failureResponse, response);
     }
 }

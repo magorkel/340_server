@@ -4,9 +4,11 @@ import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.service.request.FollowingRequest;
 import edu.byu.cs.tweeter.model.service.request.LoginRequest;
+import edu.byu.cs.tweeter.model.service.request.RegisterRequest;
 import edu.byu.cs.tweeter.model.service.request.UserRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowingResponse;
 import edu.byu.cs.tweeter.model.service.response.LoginResponse;
+import edu.byu.cs.tweeter.model.service.response.RegisterResponse;
 import edu.byu.cs.tweeter.model.service.response.UserResponse;
 
 import java.io.IOException;
@@ -62,6 +64,71 @@ public class UserDAO
         //query statement returns the given user based on the userName;
 
         return user1;
+    }
+
+    public boolean registerUser(User user, String userName) //need key value pair to match userName to user
+    {
+        ArrayList taken = new ArrayList<String> ();
+        taken.add("freddyJ");
+        taken.add("daphneB");
+        taken.add("velmaD");
+        taken.add("scoobyD");
+        boolean unique = true;
+        for (int i = 0; i < taken.size(); i++) {
+            if (userName.equals(taken.get(i))) {
+                unique = false;
+            }
+        }
+        if (unique) {
+            /*ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            Bitmap bmp = request.getImageBytes();
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] byteArray = stream.toByteArray();
+
+            ByteArrayInputStream bs = new ByteArrayInputStream(byteArray);
+
+            String newBitmap = Base64.getEncoder().encodeToString(byteArray);
+            bmp.recycle();*/
+
+            //avatar.recycle();
+
+            //send to s3, get url back, send url instead of image
+            // Create AmazonS3 object for doing S3 operations
+
+            //ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            //bmp.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+            //byte[] bitmapdata = bos.toByteArray();
+
+            /*AmazonS3Client s3 = (AmazonS3Client) AmazonS3ClientBuilder.defaultClient();
+
+
+            AmazonS3 s3 = AmazonS3ClientBuilder
+                    .standard()
+                    .withRegion("us-west-2")
+                    .build();
+            // Write code to do the following:
+            // 1. get name of file to be copied from the command line
+            // 2. get name of S3 bucket from the command line
+            // 3. upload file to the specified S3 bucket using the file name as the S3 key
+            PutObjectRequest objectRequest = new PutObjectRequest("bitmaptostringurl", request.getUsername() + "Image.png", bs, new ObjectMetadata()).withCannedAcl(CannedAccessControlList.PublicRead);
+            ;
+            s3.putObject(objectRequest);
+            //PutObjectRequest(java.lang.String bucketName,
+            //                        java.lang.String key,
+            //                        java.io.InputStream input,
+            //                        ObjectMetadata metadata)
+
+            //s3.putObject("bitmaptostringurl", bs, "Upload bitmap");
+
+            String url = s3.getResourceUrl("bitmaptostringurl", request.getUsername()+"Image.png");*/
+            //User user = new User(request.getFirstName(), request.getLastName(), "@" + request.getFirstName() + request.getLastName(),
+                    //request.getImage()/*newBitmap*/);//decode back into a bitearray and then do all that above
+            //return new RegisterResponse(user, new AuthToken());
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     /**

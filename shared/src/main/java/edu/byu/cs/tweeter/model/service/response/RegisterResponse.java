@@ -29,6 +29,18 @@ public class RegisterResponse extends Response
         this.authToken = authToken;
     }
 
+    public RegisterResponse(){}
+
+    public void setUser(User user)
+    {
+        this.user = user;
+    }
+
+    public void setAuthToken(AuthToken authToken)
+    {
+        this.authToken = authToken;
+    }
+
     /**
      * Returns the logged in user.
      *

@@ -3,13 +3,10 @@ package edu.byu.cs.tweeter.presenter;
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
-import edu.byu.cs.tweeter.model.service.FollowerService;
-import edu.byu.cs.tweeter.model.service.MakeFollowService;
-import edu.byu.cs.tweeter.model.service.UserService;
+import edu.byu.cs.tweeter.model.service.FollowerServiceProxy;
+import edu.byu.cs.tweeter.model.service.MakeFollowServiceProxy;
 import edu.byu.cs.tweeter.model.service.request.MakeFollowRequest;
-import edu.byu.cs.tweeter.model.service.request.UserRequest;
 import edu.byu.cs.tweeter.model.service.response.MakeFollowResponse;
-import edu.byu.cs.tweeter.model.service.response.UserResponse;
 
 public class MakeFollowPresenter
 {
@@ -35,18 +32,18 @@ public class MakeFollowPresenter
      */
     public MakeFollowResponse sendFollowRequest(MakeFollowRequest request) throws IOException, TweeterRemoteException
     {
-        MakeFollowService makeFollowService = getMakeFollowService();
-        return makeFollowService.sendFollowRequest(request);
+        MakeFollowServiceProxy makeFollowService = getMakeFollowService();
+        return makeFollowService.updateFollowServer(request);
     }
 
     /**
-     * Returns an instance of {@link FollowerService}. Allows mocking of the FollowingService class
+     * Returns an instance of {@link FollowerServiceProxy}. Allows mocking of the FollowingService class
      * for testing purposes. All usages of FollowingService should get their FollowingService
      * instance from this method to allow for mocking of the instance.
      *
      * @return the instance.
      */
-    MakeFollowService getMakeFollowService() {
-        return new MakeFollowService();
+    MakeFollowServiceProxy getMakeFollowService() {
+        return new MakeFollowServiceProxy();
     }
 }

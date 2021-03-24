@@ -17,5 +17,5 @@ public interface FollowerService
      * @return the followees.
      */
     FollowerResponse getFollowers(FollowerRequest request)
-            throws IOException, TweeterRemoteException;
+            throws IOException, TweeterRemoteException, java.io.IOException;
 }

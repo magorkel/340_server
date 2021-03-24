@@ -9,18 +9,20 @@ import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.model.service.MakeUnfollowService;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
+import edu.byu.cs.tweeter.model.service.MakeUnfollowServiceProxy;
 import edu.byu.cs.tweeter.model.service.request.MakeUnfollowRequest;
 import edu.byu.cs.tweeter.model.service.response.MakeUnfollowResponse;
 
 public class MakeUnfollowPresenterTest {
     private MakeUnfollowRequest request;
     private MakeUnfollowResponse response;
-    private MakeUnfollowService mockMakeUnfollowService;
+    private MakeUnfollowServiceProxy mockMakeUnfollowService;
     private MakeUnfollowPresenter presenter;
 
     @BeforeEach
-    public void setup() throws IOException {
+    public void setup() throws IOException, TweeterRemoteException
+    {
         User currentUser = new User("FirstName", "LastName", null);
 
         User resultUser1 = new User("FirstName1", "LastName1",
@@ -38,8 +40,8 @@ public class MakeUnfollowPresenterTest {
         response = new MakeUnfollowResponse(true, "successfully unfollowed");
 
         // Create a mock MakeUnfollowService
-        mockMakeUnfollowService = Mockito.mock(MakeUnfollowService.class);
-        Mockito.when(mockMakeUnfollowService.sendUnfollowRequest(request)).thenReturn(response);
+        mockMakeUnfollowService = Mockito.mock(MakeUnfollowServiceProxy.class);
+        Mockito.when(mockMakeUnfollowService.updateUnfollowServer(request)).thenReturn(response);
 
         // Wrap a MakeUnfollowPresenter in a spy that will use the mock service.
         presenter = Mockito.spy(new MakeUnfollowPresenter(new MakeUnfollowPresenter.View() {}));
@@ -47,8 +49,9 @@ public class MakeUnfollowPresenterTest {
     }
 
     @Test
-    public void testGetMakeUnfollow_returnsServiceResult() throws IOException {
-        Mockito.when(mockMakeUnfollowService.sendUnfollowRequest(request)).thenReturn(response);
+    public void testGetMakeUnfollow_returnsServiceResult() throws IOException, TweeterRemoteException
+    {
+        Mockito.when(mockMakeUnfollowService.updateUnfollowServer(request)).thenReturn(response);
 
         // Assert that the presenter returns the same response as the service (it doesn't do
         // anything else, so there's nothing else to test).
@@ -56,8 +59,9 @@ public class MakeUnfollowPresenterTest {
     }
 
     @Test
-    public void testGetMakeUnfollow_serviceThrowsIOException_presenterThrowsIOException() throws IOException {
-        Mockito.when(mockMakeUnfollowService.sendUnfollowRequest(request)).thenThrow(new IOException());
+    public void testGetMakeUnfollow_serviceThrowsIOException_presenterThrowsIOException() throws IOException, TweeterRemoteException
+    {
+        Mockito.when(mockMakeUnfollowService.updateUnfollowServer(request)).thenThrow(new IOException());
 
         Assertions.assertThrows(IOException.class, () -> {
             presenter.sendUnfollowRequest(request);

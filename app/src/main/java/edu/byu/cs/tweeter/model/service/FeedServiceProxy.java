@@ -1,22 +1,19 @@
 package edu.byu.cs.tweeter.model.service;
 
 import java.io.IOException;
-import java.util.List;
 
 import edu.byu.cs.tweeter.model.domain.Status;
-import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.ServerFacade;
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
-import edu.byu.cs.tweeter.model.service.request.StoryRequest;
-import edu.byu.cs.tweeter.model.service.response.FollowerResponse;
-import edu.byu.cs.tweeter.model.service.response.StoryResponse;
+import edu.byu.cs.tweeter.model.service.request.FeedRequest;
+import edu.byu.cs.tweeter.model.service.response.FeedResponse;
 import edu.byu.cs.tweeter.util.ByteArrayUtils;
 
-public class StoryService
+public class FeedServiceProxy implements FeedService
 {
-    public StoryResponse getStory(StoryRequest request) throws IOException, TweeterRemoteException
+    public FeedResponse getFeed(FeedRequest request) throws IOException, TweeterRemoteException
     {
-        StoryResponse response = getServerFacade().getStory(request);
+        FeedResponse response = getServerFacade().getFeed(request);
 
         if(response.isSuccess()) {
             loadImages(response);
@@ -25,8 +22,8 @@ public class StoryService
         return response;
     }
 
-    private void loadImages(StoryResponse response) throws IOException {
-        for(Status status : response.getStory()) {
+    private void loadImages(FeedResponse response) throws IOException {
+        for(Status status : response.getPosts()) {
             byte [] bytes = ByteArrayUtils.bytesFromUrl(status.getUser().getImageUrl());
             status.getUser().setImageBytes(bytes);
         }

@@ -2,9 +2,8 @@ package edu.byu.cs.tweeter.presenter;
 
 import java.io.IOException;
 
-import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
-import edu.byu.cs.tweeter.model.service.FollowerService;
+import edu.byu.cs.tweeter.model.service.FollowerServiceProxy;
 import edu.byu.cs.tweeter.model.service.request.FollowerRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowerResponse;
 
@@ -39,18 +38,18 @@ public class FollowerPresenter extends UserPresenter
      */
     public FollowerResponse getFollower(FollowerRequest request) throws IOException, TweeterRemoteException
     {
-        FollowerService followerService = getFollowerService();
+        FollowerServiceProxy followerService = getFollowerService();
         return followerService.getFollowers(request);
     }
 
     /**
-     * Returns an instance of {@link FollowerService}. Allows mocking of the FollowingService class
+     * Returns an instance of {@link FollowerServiceProxy}. Allows mocking of the FollowingService class
      * for testing purposes. All usages of FollowingService should get their FollowingService
      * instance from this method to allow for mocking of the instance.
      *
      * @return the instance.
      */
-    FollowerService getFollowerService() {
-        return new FollowerService();
+    FollowerServiceProxy getFollowerService() {
+        return new FollowerServiceProxy();
     }
 }

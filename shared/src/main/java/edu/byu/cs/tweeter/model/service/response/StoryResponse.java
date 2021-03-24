@@ -28,5 +28,5 @@ public class StoryResponse extends PagedResponse
         this.posts = posts;
     }
 
-    public List<Status> getStory() { return posts; }
+    public List<Status> getPosts() { return posts; }
 }

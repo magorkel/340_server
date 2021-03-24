@@ -11,4 +11,6 @@ public class LogoutResponse extends Response
     {
         super(success, message);
     }
+
+    public LogoutResponse() {}
 }

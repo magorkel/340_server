@@ -10,18 +10,20 @@ import java.util.Arrays;
 
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.model.service.FeedService;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
+import edu.byu.cs.tweeter.model.service.FeedServiceProxy;
 import edu.byu.cs.tweeter.model.service.request.FeedRequest;
 import edu.byu.cs.tweeter.model.service.response.FeedResponse;
 
 public class FeedPresenterTest {
     private FeedRequest request;
     private FeedResponse response;
-    private FeedService mockFeedService;
+    private FeedServiceProxy mockFeedService;
     private FeedPresenter presenter;
 
     @BeforeEach
-    public void setup() throws IOException {
+    public void setup() throws IOException, TweeterRemoteException
+    {
         User currentUser = new User("FirstName", "LastName", null);
 
         User resultUser1 = new User("FirstName1", "LastName1",
@@ -39,7 +41,7 @@ public class FeedPresenterTest {
         response = new FeedResponse(Arrays.asList(status1, status2, status3), false);
 
         // Create a mock FeedService
-        mockFeedService = Mockito.mock(FeedService.class);
+        mockFeedService = Mockito.mock(FeedServiceProxy.class);
         Mockito.when(mockFeedService.getFeed(request)).thenReturn(response);
 
         // Wrap a FeedPresenter in a spy that will use the mock service.
@@ -48,7 +50,8 @@ public class FeedPresenterTest {
     }
 
     @Test
-    public void testGetFeed_returnsServiceResult() throws IOException {
+    public void testGetFeed_returnsServiceResult() throws IOException, TweeterRemoteException
+    {
         Mockito.when(mockFeedService.getFeed(request)).thenReturn(response);
 
         // Assert that the presenter returns the same response as the service (it doesn't do
@@ -57,7 +60,8 @@ public class FeedPresenterTest {
     }
 
     @Test
-    public void testGetFeed_serviceThrowsIOException_presenterThrowsIOException() throws IOException {
+    public void testGetFeed_serviceThrowsIOException_presenterThrowsIOException() throws IOException, TweeterRemoteException
+    {
         Mockito.when(mockFeedService.getFeed(request)).thenThrow(new IOException());
 
         Assertions.assertThrows(IOException.class, () -> {

@@ -2,7 +2,8 @@ package edu.byu.cs.tweeter.presenter;
 
 import java.io.IOException;
 
-import edu.byu.cs.tweeter.model.service.LogoutService;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
+import edu.byu.cs.tweeter.model.service.LogoutServiceProxy;
 import edu.byu.cs.tweeter.model.service.request.LogoutRequest;
 import edu.byu.cs.tweeter.model.service.response.LogoutResponse;
 
@@ -28,20 +29,20 @@ public class LogoutPresenter
      * @param request contains the data required to fulfill the request.
      * @return the followees.
      */
-    public LogoutResponse sendLogoutRequest (LogoutRequest request) throws IOException
+    public LogoutResponse sendLogoutRequest (LogoutRequest request) throws IOException, TweeterRemoteException
     {
-        LogoutService logoutService = getLogoutService();
-        return logoutService.sendLogoutRequest(request);
+        LogoutServiceProxy logoutService = getLogoutService();
+        return logoutService.getLogout(request);
     }
 
     /**
-     * Returns an instance of {@link LogoutService}. Allows mocking of the FollowingService class
+     * Returns an instance of {@link LogoutServiceProxy}. Allows mocking of the FollowingService class
      * for testing purposes. All usages of FollowingService should get their FollowingService
      * instance from this method to allow for mocking of the instance.
      *
      * @return the instance.
      */
-    LogoutService getLogoutService() {
-        return new LogoutService();
+    LogoutServiceProxy getLogoutService() {
+        return new LogoutServiceProxy();
     }
 }

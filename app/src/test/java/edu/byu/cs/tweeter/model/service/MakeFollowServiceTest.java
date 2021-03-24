@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.ServerFacade;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.service.request.MakeFollowRequest;
 import edu.byu.cs.tweeter.model.service.response.MakeFollowResponse;
 
@@ -21,14 +21,15 @@ public class MakeFollowServiceTest
     private MakeFollowResponse successResponse;
     private MakeFollowResponse failureResponse;
 
-    private MakeFollowService makeFollowServiceSpy;
+    private MakeFollowServiceProxy makeFollowServiceSpy;
 
     /**
      * Create a MakeFollowService spy that uses a mock ServerFacade to return known responses to
      * requests.
      */
     @BeforeEach
-    public void setup() {
+    public void setup() throws IOException, TweeterRemoteException
+    {
         User currentUser = new User("FirstName", "LastName", null);
 
         User resultUser1 = new User("FirstName1", "LastName1",
@@ -51,25 +52,26 @@ public class MakeFollowServiceTest
         Mockito.when(mockServerFacade.updateFollowServer(invalidRequest)).thenReturn(failureResponse);
 
         // Create a MakeFollowService instance and wrap it with a spy that will use the mock service
-        makeFollowServiceSpy = Mockito.spy(new MakeFollowService());
+        makeFollowServiceSpy = Mockito.spy(new MakeFollowServiceProxy());
         Mockito.when(makeFollowServiceSpy.getServerFacade()).thenReturn(mockServerFacade);
     }
 
     /**
-     * Verify that for successful requests the {@link MakeFollowService#sendFollowRequest(MakeFollowRequest)}
+     * Verify that for successful requests the {@link MakeFollowServiceProxy#updateFollowServer(MakeFollowRequest)}
      * method returns the same result as the {@link ServerFacade}.
      * .
      *
      * @throws IOException if an IO error occurs.
      */
     @Test
-    public void testGetFollowees_validRequest_correctResponse() throws IOException {
-        MakeFollowResponse response = makeFollowServiceSpy.sendFollowRequest(validRequest);
+    public void testGetFollowees_validRequest_correctResponse() throws IOException, TweeterRemoteException
+    {
+        MakeFollowResponse response = makeFollowServiceSpy.updateFollowServer(validRequest);
         Assertions.assertEquals(successResponse, response);
     }
 
     /**
-     * Verify that the {@link MakeFollowService#sendFollowRequest(MakeFollowRequest)} method loads the
+     * Verify that the {@link MakeFollowServiceProxy#updateFollowServer(MakeFollowRequest)} method loads the
      * profile image of each user included in the result.
      *
      * @throws IOException if an IO error occurs.
@@ -85,14 +87,15 @@ public class MakeFollowServiceTest
     }*/
 
     /**
-     * Verify that for failed requests the {@link MakeFollowService#sendFollowRequest(MakeFollowRequest)}
+     * Verify that for failed requests the {@link MakeFollowServiceProxy#updateFollowServer(MakeFollowRequest)}
      * method returns the same result as the {@link ServerFacade}.
      *
      * @throws IOException if an IO error occurs.
      */
     @Test
-    public void testGetFollowees_invalidRequest_returnsNoFollowees() throws IOException {
-        MakeFollowResponse response = makeFollowServiceSpy.sendFollowRequest(invalidRequest);
+    public void testGetFollowees_invalidRequest_returnsNoFollowees() throws IOException, TweeterRemoteException
+    {
+        MakeFollowResponse response = makeFollowServiceSpy.updateFollowServer(invalidRequest);
         Assertions.assertEquals(failureResponse, response);
     }
 }

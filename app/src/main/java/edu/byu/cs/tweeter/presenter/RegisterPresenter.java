@@ -6,8 +6,8 @@ import androidx.annotation.RequiresApi;
 
 import java.io.IOException;
 
-import edu.byu.cs.tweeter.model.service.LoginService;
-import edu.byu.cs.tweeter.model.service.RegisterService;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
+import edu.byu.cs.tweeter.model.service.RegisterServiceProxy;
 import edu.byu.cs.tweeter.model.service.request.RegisterRequest;
 import edu.byu.cs.tweeter.model.service.response.RegisterResponse;
 
@@ -37,14 +37,14 @@ public class RegisterPresenter
      * @param registerRequest the request.
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public RegisterResponse register(RegisterRequest registerRequest) throws IOException
+    public RegisterResponse register(RegisterRequest registerRequest) throws IOException, TweeterRemoteException
     {
-        RegisterService registerService = getRegisterService();
-        return registerService.register(registerRequest);
+        RegisterServiceProxy registerService = getRegisterService();
+        return registerService.getRegister(registerRequest);
     }
 
     //This is for Mockito Testing
-    RegisterService getRegisterService() {
-        return new RegisterService();
+    RegisterServiceProxy getRegisterService() {
+        return new RegisterServiceProxy();
     }
 }

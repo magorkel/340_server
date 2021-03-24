@@ -8,5 +8,5 @@ import java.io.IOException;
 
 public interface FeedService {
     FeedResponse getFeed(FeedRequest request)
-            throws IOException, TweeterRemoteException;
+            throws IOException, TweeterRemoteException, java.io.IOException;
 }

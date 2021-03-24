@@ -1,7 +1,5 @@
 package edu.byu.cs.tweeter.presenter;
 
-import android.graphics.Bitmap;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,19 +9,20 @@ import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.model.service.RegisterService;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
+import edu.byu.cs.tweeter.model.service.RegisterServiceProxy;
 import edu.byu.cs.tweeter.model.service.request.RegisterRequest;
 import edu.byu.cs.tweeter.model.service.response.RegisterResponse;
-import edu.byu.cs.tweeter.util.ByteArrayUtils;
 
 public class RegisterPresenterTest {
     private RegisterRequest request;
     private RegisterResponse response;
-    private RegisterService mockRegisterService;
+    private RegisterServiceProxy mockRegisterService;
     private RegisterPresenter presenter;
 
     @BeforeEach
-    public void setup() throws IOException {
+    public void setup() throws IOException, TweeterRemoteException
+    {
         User currentUser = new User("FirstName", "LastName", null);
 
         User resultUser1 = new User("FirstName1", "LastName1",
@@ -38,13 +37,12 @@ public class RegisterPresenterTest {
         //Create a byte array from the given URL
         //Bitmap bm1 = Bitmap.createBitmap(100, 200, Bitmap.Config.ARGB_8888);
 
-        request = new RegisterRequest(testUser.getName(), "Password", testUser.getFirstName(), testUser.getLastName(),
-                null);
+        request = new RegisterRequest(testUser.getName(), "Password", testUser.getFirstName(), testUser.getLastName(), "");
         response = new RegisterResponse(testUser, new AuthToken());
 
         // Create a mock RegisterService
-        mockRegisterService = Mockito.mock(RegisterService.class);
-        Mockito.when(mockRegisterService.register(request)).thenReturn(response);
+        mockRegisterService = Mockito.mock(RegisterServiceProxy.class);
+        Mockito.when(mockRegisterService.getRegister(request)).thenReturn(response);
 
         // Wrap a RegisterPresenter in a spy that will use the mock service.
         presenter = Mockito.spy(new RegisterPresenter(new RegisterPresenter.View() {}));
@@ -52,8 +50,9 @@ public class RegisterPresenterTest {
     }
 
     @Test
-    public void testGetRegister_returnsServiceResult() throws IOException {
-        Mockito.when(mockRegisterService.register(request)).thenReturn(response);
+    public void testGetRegister_returnsServiceResult() throws IOException, TweeterRemoteException
+    {
+        Mockito.when(mockRegisterService.getRegister(request)).thenReturn(response);
 
         // Assert that the presenter returns the same response as the service (it doesn't do
         // anything else, so there's nothing else to test).
@@ -65,8 +64,9 @@ public class RegisterPresenterTest {
     }
 
     @Test
-    public void testGetRegister_serviceThrowsIOException_presenterThrowsIOException() throws IOException {
-        Mockito.when(mockRegisterService.register(request)).thenThrow(new IOException());
+    public void testGetRegister_serviceThrowsIOException_presenterThrowsIOException() throws IOException, TweeterRemoteException
+    {
+        Mockito.when(mockRegisterService.getRegister(request)).thenThrow(new IOException());
 
         Assertions.assertThrows(IOException.class, () -> {
             presenter.register(request);

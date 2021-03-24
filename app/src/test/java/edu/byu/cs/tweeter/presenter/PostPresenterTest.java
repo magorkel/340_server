@@ -9,18 +9,20 @@ import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.model.service.PostService;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
+import edu.byu.cs.tweeter.model.service.PostServiceProxy;
 import edu.byu.cs.tweeter.model.service.request.PostRequest;
 import edu.byu.cs.tweeter.model.service.response.PostResponse;
 
 public class PostPresenterTest {
     private PostRequest request;
     private PostResponse response;
-    private PostService mockPostService;
+    private PostServiceProxy mockPostService;
     private PostPresenter presenter;
 
     @BeforeEach
-    public void setup() throws IOException {
+    public void setup() throws IOException, TweeterRemoteException
+    {
         User currentUser = new User("FirstName", "LastName", null);
 
         User resultUser1 = new User("FirstName1", "LastName1",
@@ -37,8 +39,8 @@ public class PostPresenterTest {
         response = new PostResponse(true, "successfully posted");
 
         // Create a mock PostService
-        mockPostService = Mockito.mock(PostService.class);
-        Mockito.when(mockPostService.sendPostRequest(request)).thenReturn(response);
+        mockPostService = Mockito.mock(PostServiceProxy.class);
+        Mockito.when(mockPostService.updatePostServer(request)).thenReturn(response);
 
         // Wrap a PostPresenter in a spy that will use the mock service.
         presenter = Mockito.spy(new PostPresenter(new PostPresenter.View() {}));
@@ -46,8 +48,9 @@ public class PostPresenterTest {
     }
 
     @Test
-    public void testGetPost_returnsServiceResult() throws IOException {
-        Mockito.when(mockPostService.sendPostRequest(request)).thenReturn(response);
+    public void testGetPost_returnsServiceResult() throws IOException, TweeterRemoteException
+    {
+        Mockito.when(mockPostService.updatePostServer(request)).thenReturn(response);
 
         // Assert that the presenter returns the same response as the service (it doesn't do
         // anything else, so there's nothing else to test).
@@ -55,8 +58,9 @@ public class PostPresenterTest {
     }
 
     @Test
-    public void testGetPost_serviceThrowsIOException_presenterThrowsIOException() throws IOException {
-        Mockito.when(mockPostService.sendPostRequest(request)).thenThrow(new IOException());
+    public void testGetPost_serviceThrowsIOException_presenterThrowsIOException() throws IOException, TweeterRemoteException
+    {
+        Mockito.when(mockPostService.updatePostServer(request)).thenThrow(new IOException());
 
         Assertions.assertThrows(IOException.class, () -> {
             presenter.sendPostRequest(request);

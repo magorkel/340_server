@@ -1,29 +1,33 @@
 package edu.byu.cs.tweeter.model.service;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.ServerFacade;
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.service.request.LoginRequest;
+import edu.byu.cs.tweeter.model.service.request.RegisterRequest;
 import edu.byu.cs.tweeter.model.service.response.LoginResponse;
+import edu.byu.cs.tweeter.model.service.response.RegisterResponse;
 import edu.byu.cs.tweeter.util.ByteArrayUtils;
 
-/**
- * Contains the business logic to support the login operation.
- */
-public class LoginService {
-
-    public LoginResponse login(LoginRequest request) throws IOException, TweeterRemoteException
+public class RegisterServiceProxy implements RegisterService
+{
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public RegisterResponse getRegister(RegisterRequest request) throws IOException, TweeterRemoteException
     {
         ServerFacade serverFacade = getServerFacade();
-        LoginResponse loginResponse = serverFacade.login(request);//register this is where we take pic?
+        RegisterResponse registerResponse = serverFacade.register(request);//register this is where we take pic?
 
-        if(loginResponse.isSuccess()) {
-            loadImage(loginResponse.getUser());
+        if(registerResponse.isSuccess()) {
+            loadImage(registerResponse.getUser());
         }
 
-        return loginResponse;
+        return registerResponse;
     }
 
     /**
@@ -32,8 +36,8 @@ public class LoginService {
      * @param user the user whose profile image data is to be loaded.
      */
     private void loadImage(User user) throws IOException {
-        byte [] bytes = ByteArrayUtils.bytesFromUrl(user.getImageUrl());
-        user.setImageBytes(bytes);
+        //byte [] bytes = ByteArrayUtils.bytesFromUrl(user.getImageUrl());
+        user.setImageBytes(user.getImageBytes());
     }
 
     /**

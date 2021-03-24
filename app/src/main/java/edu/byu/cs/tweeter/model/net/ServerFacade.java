@@ -125,7 +125,7 @@ public class ServerFacade {
         //else return error*/
         String urlPath = "/getuser";
         UserResponse response = clientCommunicator.doPost(urlPath, request, null, UserResponse.class);
-        if(response.isSuccess()) {
+        if(response.isSuccess() || response.getMessage() != null) {
             return response;
         } else {
             throw new RuntimeException(response.getMessage());
@@ -162,9 +162,10 @@ public class ServerFacade {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public RegisterResponse register(RegisterRequest request) {
+    public RegisterResponse register(RegisterRequest request) throws IOException, TweeterRemoteException
+    {
         //This one will check all usernames and make sure yours is not taken before returning.
-        ArrayList taken = new ArrayList<String> ();
+        /*ArrayList taken = new ArrayList<String> ();
         taken.add("freddyJ");
         taken.add("daphneB");
         taken.add("velmaD");
@@ -217,12 +218,25 @@ public class ServerFacade {
             //s3.putObject("bitmaptostringurl", bs, "Upload bitmap");
 
             String url = s3.getResourceUrl("bitmaptostringurl", request.getUsername()+"Image.png");*/
-            User user = new User(request.getFirstName(), request.getLastName(), "@" + request.getFirstName() + request.getLastName(),
-                    request.getImage()/*newBitmap*/);//decode back into a bitearray and then do all that above
-            return new RegisterResponse(user, new AuthToken());
+            /*User user = new User(request.getFirstName(), request.getLastName(), "@" + request.getFirstName() + request.getLastName(),
+                    request.getImage()/*newBitmap*///);//decode back into a bitearray and then do all that above
+            /*return new RegisterResponse(user, new AuthToken());
         }
         else {
             return new RegisterResponse("Error, Username taken");
+        }*/
+        String urlPath = "/getregister";
+        //String imageURL = new String(request.getImage());
+        String imageURL = "";
+        RegisterRequest newRequest = new RegisterRequest(request.getUsername(), request.getPassword(), request.getFirstName(), request.getLastName(), imageURL);
+        RegisterResponse response = clientCommunicator.doPost(urlPath, newRequest, null, RegisterResponse.class);
+        if(response.isSuccess()) {
+            //FIXME save in s3 bucket in server
+            response.getUser().setImageBytes(request.getImage());
+            response.getUser().setImageUrl("");
+            return response;
+        } else {
+            throw new RuntimeException(response.getMessage());
         }
 
     }
@@ -265,14 +279,22 @@ public class ServerFacade {
         }
     }
 
-    public LogoutResponse logout(LogoutRequest request)
+    public LogoutResponse logout(LogoutRequest request) throws IOException, TweeterRemoteException
     {
         //Check and verify that password is correct
         //verifies that user is in database
         //grab authtoken
         //nullify authtoken
 
-        return new LogoutResponse(true, "successfully logged out");
+        String urlPath = "/logout";
+        LogoutResponse response = clientCommunicator.doPost(urlPath, request, null, LogoutResponse.class);
+        if(response.isSuccess()) {
+            return response;
+        } else {
+            throw new RuntimeException(response.getMessage());
+        }
+
+        //return new LogoutResponse(true, "successfully logged out");
     }
 
 
@@ -440,7 +462,7 @@ public class ServerFacade {
     {
 
         // Used in place of assert statements because Android does not support them
-        if(BuildConfig.DEBUG) {
+        /*if(BuildConfig.DEBUG) {
             if(request.getLimit() < 0) {
                 throw new AssertionError();
             }
@@ -465,14 +487,14 @@ public class ServerFacade {
             hasMorePages = statusIndex < allStatuses.size();
         }
 
-        return new StoryResponse(responseStatuses, hasMorePages);
-        /*String urlPath = "/getstory";
+        return new StoryResponse(responseStatuses, hasMorePages);*/
+        String urlPath = "/getstory";
         StoryResponse response = clientCommunicator.doPost(urlPath, request, null, StoryResponse.class);
         if(response.isSuccess()) {
             return response;
         } else {
             throw new RuntimeException(response.getMessage());
-        }*/
+        }
     }
 
     private int getStatusStartingIndex(Status lastStatus, List<Status> allStatuses) {//getstatusstartingindex     string alias is a status
@@ -505,7 +527,7 @@ public class ServerFacade {
     {
 
         // Used in place of assert statements because Android does not support them
-        if(BuildConfig.DEBUG) {
+        /*if(BuildConfig.DEBUG) {
             if(request.getLimit() < 0) {
                 throw new AssertionError();
             }
@@ -530,14 +552,14 @@ public class ServerFacade {
             hasMorePages = statusIndex < allStatuses.size();
         }
 
-        return new FeedResponse(responseStatuses, hasMorePages);
-        /*String urlPath = "/getfeed";
+        return new FeedResponse(responseStatuses, hasMorePages);*/
+        String urlPath = "/getfeed";
         FeedResponse response = clientCommunicator.doPost(urlPath, request, null, FeedResponse.class);
         if(response.isSuccess()) {
             return response;
         } else {
             throw new RuntimeException(response.getMessage());
-        }*/
+        }
     }
 
     private int getFeedStartingIndex(Status lastStatus, List<Status> allStatuses) {//getstatusstartingindex     string alias is a status

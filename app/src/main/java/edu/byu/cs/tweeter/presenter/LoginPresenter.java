@@ -3,7 +3,7 @@ package edu.byu.cs.tweeter.presenter;
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
-import edu.byu.cs.tweeter.model.service.LoginService;
+import edu.byu.cs.tweeter.model.service.LoginServiceProxy;
 import edu.byu.cs.tweeter.model.service.request.LoginRequest;
 import edu.byu.cs.tweeter.model.service.response.LoginResponse;
 
@@ -37,18 +37,18 @@ public class LoginPresenter {
      */
     public LoginResponse login(LoginRequest loginRequest) throws IOException, TweeterRemoteException
     {
-        LoginService loginService = getLoginService();
+        LoginServiceProxy loginService = getLoginService();
         return loginService.login(loginRequest);
     }
 
     /**
-     * Returns an instance of {@link LoginService}. Allows mocking of the FollowingService class
+     * Returns an instance of {@link LoginServiceProxy}. Allows mocking of the FollowingService class
      * for testing purposes. All usages of FollowingService should get their FollowingService
      * instance from this method to allow for mocking of the instance.
      *
      * @return the instance.
      */
-    LoginService getLoginService() {
-        return new LoginService();
+    LoginServiceProxy getLoginService() {
+        return new LoginServiceProxy();
     }
 }

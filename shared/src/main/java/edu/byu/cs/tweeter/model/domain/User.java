@@ -9,18 +9,13 @@ import java.util.Objects;
  */
 public class User implements Comparable<User>, Serializable {
 
-    private final String firstName;
-    private final String lastName;
-    private final String alias;
-    private final String imageUrl;
+    private String firstName;
+    private String lastName;
+    private String alias;
+    private String imageUrl;
     private byte [] imageBytes;//don't want to see android drawable clear down here, so just read in the image as an array of bytes
 
-    public User() {
-        firstName = "";
-        lastName = "";
-        alias = "";
-        imageUrl = "";
-    }//
+    public User() {}//
     //create a constructor that accepts a bytearray.
 
     public User(String firstName, String lastName, String imageURL) {
@@ -64,6 +59,26 @@ public class User implements Comparable<User>, Serializable {
 
     public byte [] getImageBytes() {
         return imageBytes;
+    }
+
+    public void setFirstName(String firstName)
+    {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName)
+    {
+        this.lastName = lastName;
+    }
+
+    public void setAlias(String alias)
+    {
+        this.alias = alias;
+    }
+
+    public void setImageUrl(String imageUrl)
+    {
+        this.imageUrl = imageUrl;
     }
 
     public void setImageBytes(byte[] imageBytes) {

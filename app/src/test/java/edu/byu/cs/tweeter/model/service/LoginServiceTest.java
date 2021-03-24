@@ -6,11 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.ServerFacade;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.service.request.LoginRequest;
 import edu.byu.cs.tweeter.model.service.response.LoginResponse;
 
@@ -22,14 +22,15 @@ public class LoginServiceTest
     private LoginResponse successResponse;
     private LoginResponse failureResponse;
 
-    private LoginService loginServiceSpy;
+    private LoginServiceProxy loginServiceSpy;
 
     /**
      * Create a LoginService spy that uses a mock ServerFacade to return known responses to
      * requests.
      */
     @BeforeEach
-    public void setup() {
+    public void setup() throws IOException, TweeterRemoteException
+    {
         //User currentUser = new User("FirstName", "LastName", null);
 
         User resultUser1 = new User("FirstName1", "LastName1",
@@ -57,31 +58,33 @@ public class LoginServiceTest
         Mockito.when(mockServerFacade.login(invalidRequest)).thenReturn(failureResponse);
 
         // Create a LoginService instance and wrap it with a spy that will use the mock service
-        loginServiceSpy = Mockito.spy(new LoginService());
+        loginServiceSpy = Mockito.spy(new LoginServiceProxy());
         Mockito.when(loginServiceSpy.getServerFacade()).thenReturn(mockServerFacade);
     }
 
     /**
-     * Verify that for successful requests the {@link LoginService#login(LoginRequest)}
+     * Verify that for successful requests the {@link LoginServiceProxy#login(LoginRequest)}
      * method returns the same result as the {@link ServerFacade}.
      * .
      *
      * @throws IOException if an IO error occurs.
      */
     @Test
-    public void testGetLogin_validRequest_correctResponse() throws IOException {
+    public void testGetLogin_validRequest_correctResponse() throws IOException, TweeterRemoteException
+    {
         LoginResponse response = loginServiceSpy.login(validRequest);
         Assertions.assertEquals(successResponse, response);
     }
 
     /**
-     * Verify that for failed requests the {@link LoginService#login(LoginRequest)}
+     * Verify that for failed requests the {@link LoginServiceProxy#login(LoginRequest)}
      * method returns the same result as the {@link ServerFacade}.
      *
      * @throws IOException if an IO error occurs.
      */
     @Test
-    public void testGetLogin_invalidRequest_returnsNoLogin() throws IOException {
+    public void testGetLogin_invalidRequest_returnsNoLogin() throws IOException, TweeterRemoteException
+    {
         LoginResponse response = loginServiceSpy.login(invalidRequest);
         Assertions.assertEquals(failureResponse, response);
     }

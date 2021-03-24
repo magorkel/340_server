@@ -11,6 +11,7 @@ import java.util.Arrays;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.ServerFacade;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.service.request.FeedRequest;
 import edu.byu.cs.tweeter.model.service.response.FeedResponse;
 
@@ -22,14 +23,15 @@ public class FeedServiceTest
     private FeedResponse successResponse;
     private FeedResponse failureResponse;
 
-    private FeedService feedServiceSpy;
+    private FeedServiceProxy feedServiceSpy;
 
     /**
      * Create a FeedService spy that uses a mock ServerFacade to return known responses to
      * requests.
      */
     @BeforeEach
-    public void setup() {
+    public void setup() throws IOException, TweeterRemoteException
+    {
         User currentUser = new User("FirstName", "LastName", null);
 
         User resultUser1 = new User("FirstName1", "LastName1",
@@ -56,46 +58,49 @@ public class FeedServiceTest
         Mockito.when(mockServerFacade.getFeed(invalidRequest)).thenReturn(failureResponse);
 
         // Create a FeedService instance and wrap it with a spy that will use the mock service
-        feedServiceSpy = Mockito.spy(new FeedService());
+        feedServiceSpy = Mockito.spy(new FeedServiceProxy());
         Mockito.when(feedServiceSpy.getServerFacade()).thenReturn(mockServerFacade);
     }
 
     /**
-     * Verify that for successful requests the {@link FeedService#getFeed(FeedRequest)}
+     * Verify that for successful requests the {@link FeedServiceProxy#getFeed(FeedRequest)}
      * method returns the same result as the {@link ServerFacade}.
      * .
      *
      * @throws IOException if an IO error occurs.
      */
     @Test
-    public void testGetFeed_validRequest_correctResponse() throws IOException {
+    public void testGetFeed_validRequest_correctResponse() throws IOException, TweeterRemoteException
+    {
         FeedResponse response = feedServiceSpy.getFeed(validRequest);
         Assertions.assertEquals(successResponse, response);
     }
 
     /**
-     * Verify that the {@link FeedService#getFeed(FeedRequest)} method loads the
+     * Verify that the {@link FeedServiceProxy#getFeed(FeedRequest)} method loads the
      * profile image of each user included in the result.
      *
      * @throws IOException if an IO error occurs.
      */
     @Test
-    public void testGetFeed_validRequest_loadsProfileImages() throws IOException {
+    public void testGetFeed_validRequest_loadsProfileImages() throws IOException, TweeterRemoteException
+    {
         FeedResponse response = feedServiceSpy.getFeed(validRequest);
 
-        for(Status status : response.getFeed()) {
+        for(Status status : response.getPosts()) {
             Assertions.assertNotNull(status.getContent());
         }
     }
 
     /**
-     * Verify that for failed requests the {@link FeedService#getFeed(FeedRequest)}
+     * Verify that for failed requests the {@link FeedServiceProxy#getFeed(FeedRequest)}
      * method returns the same result as the {@link ServerFacade}.
      *
      * @throws IOException if an IO error occurs.
      */
     @Test
-    public void testGetFeed_invalidRequest_returnsNoFeed() throws IOException {
+    public void testGetFeed_invalidRequest_returnsNoFeed() throws IOException, TweeterRemoteException
+    {
         FeedResponse response = feedServiceSpy.getFeed(invalidRequest);
         Assertions.assertEquals(failureResponse, response);
     }

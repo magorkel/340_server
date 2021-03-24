@@ -4,10 +4,13 @@ import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.net.ServerFacade;
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
-import edu.byu.cs.tweeter.model.service.request.PostRequest;
-import edu.byu.cs.tweeter.model.service.response.PostResponse;
+import edu.byu.cs.tweeter.model.service.request.MakeFollowRequest;
+import edu.byu.cs.tweeter.model.service.request.UserRequest;
+import edu.byu.cs.tweeter.model.service.response.MakeFollowResponse;
+import edu.byu.cs.tweeter.model.service.response.UserResponse;
+import edu.byu.cs.tweeter.util.ByteArrayUtils;
 
-public class PostService
+public class MakeFollowServiceProxy implements MakeFollowService
 {
     /**
      * Returns the users that the user specified in the request is following. Uses information in
@@ -18,9 +21,9 @@ public class PostService
      * @param request contains the data required to fulfill the request.
      * @return the followees.
      */
-    public PostResponse sendPostRequest(PostRequest request) throws IOException, TweeterRemoteException
+    public MakeFollowResponse updateFollowServer(MakeFollowRequest request) throws IOException, TweeterRemoteException
     {
-        PostResponse response = getServerFacade().updatePostServer(request);
+        MakeFollowResponse response = getServerFacade().updateFollowServer(request);
 
         /*if(response.isSuccess()) {
             //loadImages(response);
@@ -47,7 +50,7 @@ public class PostService
      *
      * @return the instance.
      */
-    public ServerFacade getServerFacade() {
+    ServerFacade getServerFacade() {
         return new ServerFacade();
     }
 }

@@ -3,7 +3,7 @@ package edu.byu.cs.tweeter.presenter;
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
-import edu.byu.cs.tweeter.model.service.StoryService;
+import edu.byu.cs.tweeter.model.service.StoryServiceProxy;
 import edu.byu.cs.tweeter.model.service.request.StoryRequest;
 import edu.byu.cs.tweeter.model.service.response.StoryResponse;
 
@@ -37,18 +37,18 @@ public class StoryPresenter extends UserPresenter
      */
     public StoryResponse getStory(StoryRequest request) throws IOException, TweeterRemoteException
     {
-        StoryService storyService = getStoryService();
+        StoryServiceProxy storyService = getStoryService();
         return storyService.getStory(request);
     }
 
     /**
-     * Returns an instance of {@link StoryService}. Allows mocking of the FollowingService class
+     * Returns an instance of {@link StoryServiceProxy}. Allows mocking of the FollowingService class
      * for testing purposes. All usages of FollowingService should get their FollowingService
      * instance from this method to allow for mocking of the instance.
      *
      * @return the instance.
      */
-    StoryService getStoryService() {
-        return new StoryService();
+    StoryServiceProxy getStoryService() {
+        return new StoryServiceProxy();
     }
 }
