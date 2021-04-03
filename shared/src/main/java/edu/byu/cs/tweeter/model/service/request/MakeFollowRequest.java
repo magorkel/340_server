@@ -15,13 +15,16 @@ public class MakeFollowRequest
     private String followerAlias;
     private String followeeAlias;
 
+    public MakeFollowRequest() {
+        this.followeeAlias = null;
+        this.followerAlias = null;
+    }
+
     public MakeFollowRequest(String followerAlias, String followeeAlias)
     {
         this.followerAlias = followerAlias;
-        this.followerAlias = followerAlias;
+        this.followeeAlias = followeeAlias;
     }
-
-    public MakeFollowRequest() {}
 
     public void setFollowerAlias(String followerAlias)
     {

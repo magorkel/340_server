@@ -1,8 +1,6 @@
 package edu.byu.cs.tweeter.server.dao;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.service.request.FollowerRequest;
@@ -13,6 +11,19 @@ import edu.byu.cs.tweeter.model.service.response.FollowerResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowingResponse;
 import edu.byu.cs.tweeter.model.service.response.MakeFollowResponse;
 import edu.byu.cs.tweeter.model.service.response.MakeUnfollowResponse;
+
+
+import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.document.*;
+import com.amazonaws.services.dynamodbv2.document.spec.DeleteItemSpec;
+import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
+import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
+import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
+import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
+import com.amazonaws.services.dynamodbv2.model.ReturnValue;
+
 
 /**
  * A DAO for accessing 'following' data from the database.
@@ -42,6 +53,20 @@ public class FollowingDAO {
     private final User user18 = new User("Isabel", "Isaacson", FEMALE_IMAGE_URL);
     private final User user19 = new User("Justin", "Jones", MALE_IMAGE_URL);
     private final User user20 = new User("Jill", "Johnson", FEMALE_IMAGE_URL);
+
+    private DynamoDB dynamoDB;
+    private Table table;
+
+    public FollowingDAO()
+    {
+        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
+                //.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:8080", "us-west-2"))
+                .withRegion("us-west-2")
+                .build();
+
+        dynamoDB = new DynamoDB(client);
+        table = dynamoDB.getTable("follows");
+    }
 
     /**
      * Gets the count of users from the database that the user specified is following. The
@@ -161,10 +186,38 @@ public class FollowingDAO {
     public MakeFollowResponse updateFollowServer(MakeFollowRequest request)
     {
         //pull out two users and update their lists
-        return new MakeFollowResponse(true,"successfully followed");
+        try
+        {
+            createFollows(request.getFollowerAlias(), request.getFolloweeAlias());
+            return new MakeFollowResponse(true, "successfully followed");
+        }
+        catch(Exception e)
+        {
+            return new MakeFollowResponse(false,"error adding to table");
+        }
     }
     public MakeUnfollowResponse updateUnfollowServer(MakeUnfollowRequest request)
     {
         return new MakeUnfollowResponse(true,"successfully unfollowed");
+    }
+
+    public void createFollows(String follower_handle, String followee_handle/*, String followee_name, String follower_name*/)
+    {
+        /*final Map<String, Object> infoMap = new HashMap<String, Object>();
+        infoMap.put("follower_name", follower_name);
+        infoMap.put("followee_name", followee_name);*/
+
+        try {
+            System.out.println("Adding a new item...");
+            PutItemOutcome outcome = table
+                    .putItem(new Item().withPrimaryKey("follower_handle", follower_handle, "followee_handle", followee_handle));//.withMap("info", infoMap));
+
+            System.out.println("PutItem succeeded:\n" + outcome.getPutItemResult());
+        }
+        catch (Exception e) {
+            System.err.println("Unable to add item: " + follower_handle + " " + followee_handle);
+            System.err.println(e.getMessage());
+        }
+
     }
 }

@@ -38,7 +38,7 @@ public class RegisterServiceImplTest
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png");
 
         // Setup a request object to use in the tests
-        request = new RegisterRequest("username", "password", resultUser1.getFirstName(), resultUser1.getLastName(), null);
+        request = new RegisterRequest("username", "password", resultUser1.getFirstName(), resultUser1.getLastName(), ""/*null*/);
 
         // Setup a mock UserDAO that will return known responses
         expectedResponse = new RegisterResponse("user1, new AuthToken()");

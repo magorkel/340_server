@@ -11,6 +11,7 @@ public class GetMakeFollowHandler implements RequestHandler<MakeFollowRequest, M
     public MakeFollowResponse handleRequest(MakeFollowRequest request, Context context)
     {
         MakeFollowServiceImpl service = new MakeFollowServiceImpl();
+        MakeFollowRequest makeFollowRequest = new MakeFollowRequest();
         return service.updateFollowServer(request);
     }
 }
