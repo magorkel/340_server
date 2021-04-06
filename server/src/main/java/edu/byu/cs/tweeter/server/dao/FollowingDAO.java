@@ -54,6 +54,17 @@ public class FollowingDAO {
     private final User user19 = new User("Justin", "Jones", MALE_IMAGE_URL);
     private final User user20 = new User("Jill", "Johnson", FEMALE_IMAGE_URL);
 
+    List<User>userList = Arrays.asList(user1, user2, user3, user4, user5);
+
+    public void populateUserList()
+    {
+        String allenAnderson = user1.getAlias();
+        for (int i = 1; i < 5; i++)
+        {
+            createFollows(userList.get(i).getAlias(), allenAnderson);
+        }
+    }
+
     private DynamoDB dynamoDB;
     private Table table;
 
@@ -66,6 +77,8 @@ public class FollowingDAO {
 
         dynamoDB = new DynamoDB(client);
         table = dynamoDB.getTable("follows");
+
+        //populateUserList();
     }
 
     /**
@@ -183,6 +196,11 @@ public class FollowingDAO {
                 user19, user20);
     }
 
+    List<User> getFolloweesFromDB()
+    {
+        List<String> fromGetFollows =
+    }
+
     public MakeFollowResponse updateFollowServer(MakeFollowRequest request)
     {
         //pull out two users and update their lists
@@ -198,7 +216,15 @@ public class FollowingDAO {
     }
     public MakeUnfollowResponse updateUnfollowServer(MakeUnfollowRequest request)
     {
-        return new MakeUnfollowResponse(true,"successfully unfollowed");
+        try
+        {
+            deleteFollows(request.getFollowerAlias(), request.getFolloweeAlias());
+            return new MakeUnfollowResponse(true,"successfully unfollowed");
+        }
+        catch(Exception e)
+        {
+            return new MakeUnfollowResponse(false, "error deleting form table");
+        }
     }
 
     public void createFollows(String follower_handle, String followee_handle/*, String followee_name, String follower_name*/)
@@ -219,5 +245,36 @@ public class FollowingDAO {
             System.err.println(e.getMessage());
         }
 
+    }
+
+    public void deleteFollows(String follower_handle, String followee_handle){
+        DeleteItemSpec deleteItemSpec = new DeleteItemSpec()
+                .withPrimaryKey(new PrimaryKey("follower_handle", follower_handle, "followee_handle", followee_handle));
+
+        try {
+//            System.out.println("Attempting a conditional delete...");
+            table.deleteItem(deleteItemSpec);
+            System.out.println("DeleteItem succeeded");
+        }
+        catch (Exception e) {
+            System.err.println("Unable to delete item: " + follower_handle + " " + followee_handle);
+            System.err.println(e.getMessage());
+        }
+    }
+
+    public void getFollows(String follower_handle, String followee_handle)
+    {
+        GetItemSpec spec = new GetItemSpec().withPrimaryKey("follower_handle", follower_handle, "followee_handle", followee_handle);
+
+        try {
+            System.out.println("Attempting to read the item...");
+            Item outcome = table.getItem(spec);
+            System.out.println("GetItem succeeded: " + outcome);
+
+        }
+        catch (Exception e) {
+            System.err.println("Unable to read item: " + follower_handle + " " + followee_handle);
+            System.err.println(e.getMessage());
+        }
     }
 }

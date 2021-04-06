@@ -168,7 +168,10 @@ public class OtherUserActivity extends AppCompatActivity implements MakeFollowPr
                 //response just needs a yes or no
                 //can send data
 
-                MakeUnfollowRequest request = new MakeUnfollowRequest(CURRENT_USER_KEY, OTHER_USER_KEY);
+                User currUser = (User) getIntent().getSerializableExtra(CURRENT_USER_KEY);
+                User otherUser = (User) getIntent().getSerializableExtra(OTHER_USER_KEY);
+                MakeUnfollowRequest request = new MakeUnfollowRequest(currUser.getAlias(), otherUser.getAlias());
+                //MakeUnfollowRequest request = new MakeUnfollowRequest(CURRENT_USER_KEY, OTHER_USER_KEY);
                 GetMakeUnfollowTask unfollowTask = new GetMakeUnfollowTask(unPresenter,OtherUserActivity.this);
                 unfollowTask.execute(request);
             }
