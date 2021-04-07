@@ -136,7 +136,9 @@ public class OtherUserActivity extends AppCompatActivity implements MakeFollowPr
                 //response just needs a yes or no
                 //can send data
 
-                MakeFollowRequest request = new MakeFollowRequest(CURRENT_USER_KEY, OTHER_USER_KEY);
+                User currUser = (User) getIntent().getSerializableExtra(CURRENT_USER_KEY);
+                User otherUser = (User) getIntent().getSerializableExtra(OTHER_USER_KEY);
+                MakeFollowRequest request = new MakeFollowRequest(currUser.getAlias(), otherUser.getAlias());
                 GetMakeFollowTask followTask = new GetMakeFollowTask(presenter, OtherUserActivity.this);
                 followTask.execute(request);
             }

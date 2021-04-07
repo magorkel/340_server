@@ -16,7 +16,8 @@ public class LoginServiceImpl implements LoginService {
 
         //1. get a list of users from UserDAO - these are handled inside of userDAO
         //2. find user from list - handled inside of userDAO
-        User user = getUserDAO().getUser(request.getUsername());
+        //String userAlias = getPasswordDAO().getPassword(request.getPassword());
+        User user = getUserDAO().getUser("@AllenAnderson");
         //3. if we don't find - return error
         //4. match password with PasswordDAO
         if (getPasswordDAO().findPassword(request.getUsername()).equals(request.getPassword()))

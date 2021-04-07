@@ -1,5 +1,9 @@
 package edu.byu.cs.tweeter.server.dao;
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.document.*;
+import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.service.request.FollowingRequest;
@@ -12,12 +16,13 @@ import edu.byu.cs.tweeter.model.service.response.RegisterResponse;
 import edu.byu.cs.tweeter.model.service.response.UserResponse;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class UserDAO
 {
+    private DynamoDB dynamoDB;
+    private Table table;
+
     private static final String MALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png";
     private static final String FEMALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png";
 
@@ -44,6 +49,26 @@ public class UserDAO
 
     private ArrayList<User> userList = new ArrayList<>();
 
+    public UserDAO()
+    {
+        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
+                //.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:8080", "us-west-2"))
+                .withRegion("us-west-2")
+                .build();
+
+        dynamoDB = new DynamoDB(client);
+        table = dynamoDB.getTable("user");
+
+
+
+        List<User> listOfUsers = getDummyUsers();
+        for (int i = 0; i < listOfUsers.size(); i ++)
+        {
+            //createUser(listOfUsers.get(i));
+        }
+        //createUser(user1);
+    }
+
     /*public Integer getUserCount(User user) {
         // TODO: uses the dummy data.  Replace with a real implementation.
         assert user != null;
@@ -56,14 +81,51 @@ public class UserDAO
      * next set of followees after any that were returned in a previous request. The current
      * implementation returns generated data and doesn't actually access a database.
      *
-     * @param userName contains information about the user whose followees are to be returned and any
+     * @param userAlias contains information about the user whose followees are to be returned and any
      *                other information required to satisfy the request.
      * @return the followees.
      */
-    public User getUser(String userName) {
+    public User getUser(String userAlias) {
         //query statement returns the given user based on the userName;
+        User user = new User();
 
-        return user1;
+        Item item = null;
+
+        try {
+            System.out.println(userAlias);
+            item = table.getItem("alias", userAlias);
+            System.out.println(item.getString("firstName"));
+
+            user.setAlias(userAlias);
+            user.setFirstName(item.getString("firstName"));
+            user.setLastName(item.getString("lastName"));
+            user.setImageUrl(item.getString("imageURL"));
+
+            return user;
+        }
+        catch (Exception e) {
+            System.err.println("Unable to query for " + userAlias);
+            System.err.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public void createUser(User user)
+    {
+        try {
+            System.out.println("Adding a new user...");
+            PutItemOutcome outcome = table
+                    .putItem(new Item().withPrimaryKey("alias", user.getAlias())
+                            .withString("firstName", user.getFirstName())
+                            .withString("lastName", user.getLastName())
+                            .withString("imageURL", user.getImageUrl()));
+
+            System.out.println("PutItem succeeded:\n" + outcome.getPutItemResult());
+        }
+        catch (Exception e) {
+            System.err.println("Unable to add user: " + user.getAlias());
+            System.err.println(e.getMessage());
+        }
     }
 
     public boolean registerUser(User user, String userName) //need key value pair to match userName to user

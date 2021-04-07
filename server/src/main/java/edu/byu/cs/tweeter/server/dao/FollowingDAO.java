@@ -110,7 +110,9 @@ public class FollowingDAO {
         assert request.getLimit() > 0;
         assert request.getFollowerAlias() != null;
 
-        List<User> allFollowees = getDummyFollowees();
+        //FIXME how does this effect a newly registered user?
+        //List<User> allFollowees = getDummyFollowees();
+        List<User> allFollowees = getFolloweesFromDB(request.getFollowerAlias());
         List<User> responseFollowees = new ArrayList<>(request.getLimit());
 
         boolean hasMorePages = false;
@@ -135,7 +137,8 @@ public class FollowingDAO {
         assert request.getLimit() > 0;
         assert request.getFollowerAlias() != null;
 
-        List<User> allFollowers = getDummyFollowees();
+        //List<User> allFollowers = getDummyFollowees();
+        List<User> allFollowers = getFollowersFromDB(request.getFollowerAlias());
         List<User> responseFollowers = new ArrayList<>(request.getLimit());
 
         boolean hasMorePages = false;
@@ -197,11 +200,33 @@ public class FollowingDAO {
                 user19, user20);
     }
 
-    List<User> getFolloweesFromDB(String followeeAlias)
+    List<User> getFollowersFromDB(String followeeAlias)
     {
-        List<String> followees = getFollows(followeeAlias);
+        List<String> followers = getFollowersList(followeeAlias);
         //use followees to get list of users from DB
         List<User> users = new ArrayList<>();
+        UserDAO userDAO = new UserDAO();
+        for (int i = 0; i < followers.size(); i++)
+        {
+            users.add(userDAO.getUser(followers.get(i)));
+        }
+        return users;
+    }
+
+    //this one grabs the follow
+    List<User> getFolloweesFromDB(String followerAlias)
+    {
+        List<String> followees = getFolloweesList(followerAlias);
+        //System.out.println(followees.get(0));
+        //use followees to get list of users from DB
+        List<User> users = new ArrayList<>();
+        UserDAO userDAO = new UserDAO();
+        //System.out.println("before entering for loop");
+        for (int i = 0; i < followees.size(); i++)
+        {
+            //System.out.println("i = " + i);
+            users.add(userDAO.getUser(followees.get(i)));
+        }
         return users;
     }
 
@@ -266,8 +291,10 @@ public class FollowingDAO {
         }
     }
 
-    public List<String> getFollows(String followee_handle)
+    public List<String> getFollowersList(String followee_handle)
     {
+        List<String> followeeAliases = new ArrayList<>();
+
         HashMap<String, Object> valueMap = new HashMap<String, Object>();
         valueMap.put(":fh", followee_handle);
 
@@ -286,8 +313,6 @@ public class FollowingDAO {
             System.out.println(followee_handle + "'s followers:");
             items = table.getIndex("follows_index").query(querySpec);
 
-            List<String> followeeAliases = new ArrayList<>();
-
             iterator = items.iterator();
             while (iterator.hasNext()) {
                 item = iterator.next();
@@ -296,12 +321,55 @@ public class FollowingDAO {
                 followeeAliases.add(item.getString("follower_handle"));
             }
 
-            return followeeAliases;
+            //return followeeAliases;
         }
         catch (Exception e) {
             System.err.println("Unable to query " + followee_handle + "'s followers!");
             System.err.println(e.getMessage());
-            return null;
+            //return ;
         }
+        return followeeAliases;
+    }
+
+    public List<String> getFolloweesList(String follower_handle)
+    {
+        List<String> followerAliases = new ArrayList<>();
+
+        HashMap<String, Object> valueMap = new HashMap<String, Object>();
+        valueMap.put(":fh", follower_handle);
+
+        String query = "follower_handle = :fh";
+
+        QuerySpec querySpec = new QuerySpec()
+                .withScanIndexForward(false)
+                .withKeyConditionExpression(query)
+                .withValueMap(valueMap);
+
+        ItemCollection<QueryOutcome> items = null;
+        Iterator<Item> iterator = null;
+        Item item = null;
+
+        try {
+            System.out.println(follower_handle + "'s followees:");
+            items = table.getIndex("follows_index").query(querySpec);
+
+
+
+            iterator = items.iterator();
+            while (iterator.hasNext()) {
+                item = iterator.next();
+                System.out.println(item.getString("followee_handle"));
+
+                followerAliases.add(item.getString("followee_handle"));
+            }
+
+            //return followerAliases;
+        }
+        catch (Exception e) {
+            System.err.println("Unable to query " + follower_handle + "'s followees!");
+            System.err.println(e.getMessage());
+            //return null;
+        }
+        return followerAliases;
     }
 }
