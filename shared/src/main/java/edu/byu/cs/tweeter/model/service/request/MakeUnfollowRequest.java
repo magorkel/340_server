@@ -18,7 +18,7 @@ public class MakeUnfollowRequest
     public MakeUnfollowRequest(String followerAlias, String followeeAlias)
     {
         this.followerAlias = followerAlias;
-        this.followerAlias = followerAlias;
+        this.followeeAlias = followeeAlias;
     }
 
     public MakeUnfollowRequest() {}

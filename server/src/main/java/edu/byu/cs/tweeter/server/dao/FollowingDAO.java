@@ -79,6 +79,7 @@ public class FollowingDAO {
         table = dynamoDB.getTable("follows");
 
         //populateUserList();
+        //getFolloweesFromDB("@AllenAnderson");
     }
 
     /**
@@ -196,9 +197,12 @@ public class FollowingDAO {
                 user19, user20);
     }
 
-    List<User> getFolloweesFromDB()
+    List<User> getFolloweesFromDB(String followeeAlias)
     {
-        List<String> fromGetFollows =
+        List<String> followees = getFollows(followeeAlias);
+        //use followees to get list of users from DB
+        List<User> users = new ArrayList<>();
+        return users;
     }
 
     public MakeFollowResponse updateFollowServer(MakeFollowRequest request)
@@ -262,19 +266,42 @@ public class FollowingDAO {
         }
     }
 
-    public void getFollows(String follower_handle, String followee_handle)
+    public List<String> getFollows(String followee_handle)
     {
-        GetItemSpec spec = new GetItemSpec().withPrimaryKey("follower_handle", follower_handle, "followee_handle", followee_handle);
+        HashMap<String, Object> valueMap = new HashMap<String, Object>();
+        valueMap.put(":fh", followee_handle);
+
+        String query = "followee_handle = :fh";
+
+        QuerySpec querySpec = new QuerySpec()
+                .withScanIndexForward(false)
+                .withKeyConditionExpression(query)
+                .withValueMap(valueMap);
+
+        ItemCollection<QueryOutcome> items = null;
+        Iterator<Item> iterator = null;
+        Item item = null;
 
         try {
-            System.out.println("Attempting to read the item...");
-            Item outcome = table.getItem(spec);
-            System.out.println("GetItem succeeded: " + outcome);
+            System.out.println(followee_handle + "'s followers:");
+            items = table.getIndex("follows_index").query(querySpec);
 
+            List<String> followeeAliases = new ArrayList<>();
+
+            iterator = items.iterator();
+            while (iterator.hasNext()) {
+                item = iterator.next();
+                System.out.println(item.getString("follower_handle"));
+
+                followeeAliases.add(item.getString("follower_handle"));
+            }
+
+            return followeeAliases;
         }
         catch (Exception e) {
-            System.err.println("Unable to read item: " + follower_handle + " " + followee_handle);
+            System.err.println("Unable to query " + followee_handle + "'s followers!");
             System.err.println(e.getMessage());
+            return null;
         }
     }
 }
