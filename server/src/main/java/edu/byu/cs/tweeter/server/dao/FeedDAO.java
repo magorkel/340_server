@@ -16,7 +16,8 @@ import edu.byu.cs.tweeter.model.service.response.StoryResponse;
 
 import java.util.*;
 
-public class StatusDAO {
+public class FeedDAO
+{
     private static final String MALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png";
     private static final String FEMALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png";
     private final User user1 = new User("Allen", "Anderson", MALE_IMAGE_URL);
@@ -29,20 +30,20 @@ public class StatusDAO {
     private DynamoDB dynamoDB;
     private Table table;
 
-    public StatusDAO()
+    public FeedDAO()
     {
         AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
                 .withRegion("us-west-2")
                 .build();
 
         dynamoDB = new DynamoDB(client);
-        table = dynamoDB.getTable("story");
+        table = dynamoDB.getTable("feed");
 
-        //createStatus(stat1);
-        //createStatus(stat2);
-        //createStatus(stat3);
-        //createStatus(stat4);
-        //getStatusList("@AllenAnderson");
+        createStatus(stat1);
+        createStatus(stat2);
+        createStatus(stat3);
+        createStatus(stat4);
+        getStatusList("@AllenAnderson");
         //deleteStatus(stat1);
     }
 
@@ -131,37 +132,6 @@ public class StatusDAO {
 
     public FeedResponse getFeed(FeedRequest request) {
         // Used in place of assert statements because Android does not support them
-        /*
-        if(BuildConfig.DEBUG) {
-            if(request.getLimit() < 0) {
-                throw new AssertionError();
-            }
-            if(request.getUsername() == null) {
-                throw new AssertionError();
-            }
-        }*/
-        /*if (request.getUsername() != null)
-        {
-            if (request.getUsername().equals("fail now"))
-            {
-                return new FeedResponse("Fail");
-            }
-        }*/
-        List<Status> allStatuses = getDummyStatuses();
-        List<Status> responseStatuses = new ArrayList<>(request.getLimit());
-        boolean hasMorePages = false;
-        if(request.getLimit() > 0) {
-            int statusIndex = getStatusStartingIndex(request.getLastStatus(), allStatuses);
-            for(int limitCounter = 0; statusIndex < allStatuses.size() && limitCounter < request.getLimit(); statusIndex++, limitCounter++) {
-                responseStatuses.add(allStatuses.get(statusIndex));
-            }
-            hasMorePages = statusIndex < allStatuses.size();
-        }
-        return new FeedResponse(responseStatuses, hasMorePages);
-    }
-
-    public StoryResponse getStory(StoryRequest request) {
-        // Used in place of assert statements because Android does not support them
         /*if(BuildConfig.DEBUG) {
             if(request.getLimit() < 0) {
                 throw new AssertionError();
@@ -180,7 +150,7 @@ public class StatusDAO {
             }
             hasMorePages = statusIndex < allStatuses.size();
         }
-        return new StoryResponse(responseStatuses, hasMorePages);
+        return new FeedResponse(responseStatuses, hasMorePages);
     }
 
     private int getStatusStartingIndex(Status lastStatus, List<Status> allStatuses) {//getstatusstartingindex     string alias is a status

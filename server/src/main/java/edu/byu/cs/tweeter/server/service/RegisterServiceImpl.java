@@ -25,7 +25,7 @@ public class RegisterServiceImpl implements RegisterService
         User user = new User(request.getFirstName(),request.getLastName(),"@" + request.getFirstName()+request.getLastName(), request.getImage());
         boolean userCreated = getUserDAO().registerUser(user, request.getUsername());
 
-        boolean passwordCreated = getPasswordDAO().createPassword(request.getUsername(), request.getPassword());
+        boolean passwordCreated = getPasswordDAO().createPassword(request.getUsername(), request.getPassword(), "@" + request.getFirstName() + request.getLastName());
 
         AuthToken authToken = getAuthTokenDAO().createAuthToken(request.getUsername());
 

@@ -61,11 +61,11 @@ public class UserDAO
 
 
 
-        List<User> listOfUsers = getDummyUsers();
+        /*List<User> listOfUsers = getDummyUsers();
         for (int i = 0; i < listOfUsers.size(); i ++)
         {
             //createUser(listOfUsers.get(i));
-        }
+        }*/
         //createUser(user1);
     }
 

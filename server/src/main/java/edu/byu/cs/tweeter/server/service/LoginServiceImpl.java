@@ -9,6 +9,10 @@ import edu.byu.cs.tweeter.server.dao.AuthTokenDAO;
 import edu.byu.cs.tweeter.server.dao.PasswordDAO;
 import edu.byu.cs.tweeter.server.dao.UserDAO;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
+
 public class LoginServiceImpl implements LoginService {
 
     @Override
@@ -17,17 +21,27 @@ public class LoginServiceImpl implements LoginService {
         //1. get a list of users from UserDAO - these are handled inside of userDAO
         //2. find user from list - handled inside of userDAO
         //String userAlias = getPasswordDAO().getPassword(request.getPassword());
-        User user = getUserDAO().getUser("@AllenAnderson");
         //3. if we don't find - return error
         //4. match password with PasswordDAO
-        if (getPasswordDAO().findPassword(request.getUsername()).equals(request.getPassword()))
+        List<String> userInfo = getPasswordDAO().findPassword(request.getUsername());
+        if (!userInfo.isEmpty())
         {
-            AuthToken authToken = getAuthTokenDAO().createAuthToken(request.getUsername());
-            return new LoginResponse(user, authToken);
+            String tempPass = getSecurePassword(request.getPassword(), userInfo.get(2));
+            if (userInfo.get(0).equals(tempPass))
+            {
+                //make authtoken
+                AuthToken authToken = getAuthTokenDAO().createAuthToken(request.getUsername());
+                User user = getUserDAO().getUser(userInfo.get(1));
+                return new LoginResponse(user, authToken);
+            }
+            else
+            {
+                return new LoginResponse("Password does not match");
+            }
         }
         else
         {
-            return new LoginResponse("Password does not match");
+            return new LoginResponse("User does not exist");
         }
     }
 
@@ -44,5 +58,21 @@ public class LoginServiceImpl implements LoginService {
     PasswordDAO getPasswordDAO()
     {
         return new PasswordDAO();
+    }
+
+    private static String getSecurePassword(String password, String salt) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(salt.getBytes());
+            byte[] bytes = md.digest(password.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte aByte : bytes) {
+                sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "FAILED TO HASH PASSWORD";
     }
 }
