@@ -18,6 +18,7 @@ public class LogoutServiceImpl implements LogoutService
     {
         //FIXME need to get userName?
         //can we store the userName inside the user object?
+        System.out.println("Trying to print" + request.getUser().getAlias());
         boolean authTokenRemoved = getAuthTokenDAO().deleteAuthToken(request.getUser().getAlias());
 
         if (authTokenRemoved)

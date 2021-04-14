@@ -9,6 +9,21 @@ import edu.byu.cs.tweeter.server.dao.StatusDAO;
 public class PostServiceImpl implements PostService {
     @Override
     public PostResponse updatePostServer(PostRequest request) {
+
+        String messageBody = "*** PUT YOUR MESSAGE BODY HERE ***";
+        String queueUrl = "*** PUT YOUR QUEUE URL HERE ***";
+
+        SendMessageRequest send_msg_request = new SendMessageRequest()
+                .withQueueUrl(queueUrl)
+                .withMessageBody(messageBody)
+                .withDelaySeconds(5);
+
+        AmazonSQS sqs = AmazonSQSClientBuilder.defaultClient();
+        SendMessageResult send_msg_result = sqs.sendMessage(send_msg_request);
+
+        String msgId = send_msg_result.getMessageId();
+        System.out.println("Message ID: " + msgId);
+
         return getStatusDAO().updatePostServer(request);
     }
     /**

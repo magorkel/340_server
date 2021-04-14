@@ -39,11 +39,11 @@ public class FeedDAO
         dynamoDB = new DynamoDB(client);
         table = dynamoDB.getTable("feed");
 
-        createStatus(stat1);
-        createStatus(stat2);
-        createStatus(stat3);
-        createStatus(stat4);
-        getStatusList("@AllenAnderson");
+        //createStatus(stat1);
+        //createStatus(stat2);
+        //createStatus(stat3);
+        //createStatus(stat4);
+        //getStatusList("@AllenAnderson");
         //deleteStatus(stat1);
     }
 

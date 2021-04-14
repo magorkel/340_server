@@ -30,8 +30,9 @@ public class LoginServiceImpl implements LoginService {
             if (userInfo.get(0).equals(tempPass))
             {
                 //make authtoken
-                AuthToken authToken = getAuthTokenDAO().createAuthToken(request.getUsername());
+                //b we think it's amyames
                 User user = getUserDAO().getUser(userInfo.get(1));
+                AuthToken authToken = getAuthTokenDAO().createAuthToken(user.getAlias());
                 return new LoginResponse(user, authToken);
             }
             else

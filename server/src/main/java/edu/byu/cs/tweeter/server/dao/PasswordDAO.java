@@ -31,14 +31,14 @@ public class PasswordDAO
         dynamoDB = new DynamoDB(client);
         table = dynamoDB.getTable("password");
 
-        createPassword("b", "hi", "@AmyAmes");
+        //createPassword("b", "hi", "@AmyAmes");
     }
 
     public boolean createPassword(String userName, String password, String userAlias)
     {
         //adds them both to the table and returns true if they were added ok
         try {
-            System.out.println("Adding a new user...");
+            System.out.println("Adding a new password...");
             String salt = getSalt();
             PutItemOutcome outcome = table
                     .putItem(new Item().withPrimaryKey("userName", userName)
