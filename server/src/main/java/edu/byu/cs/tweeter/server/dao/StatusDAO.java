@@ -49,7 +49,7 @@ public class StatusDAO {
     public void createStatus(Status status)
     {
         try {
-            System.out.println("Adding a new user...");
+            System.out.println("Adding a new status...");
             PutItemOutcome outcome = table
                     .putItem(new Item().withPrimaryKey("userAlias", status.getUser().getAlias(), "dateTime", status.getTime())
                             .withString("firstName", status.getUser().getFirstName())

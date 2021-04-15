@@ -5,6 +5,7 @@ import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.service.request.FeedRequest;
 import edu.byu.cs.tweeter.model.service.response.FeedResponse;
+import edu.byu.cs.tweeter.server.dao.FeedDAO;
 import edu.byu.cs.tweeter.server.dao.StatusDAO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +21,7 @@ class FeedServiceImplTest
 {
     private FeedRequest request;
     private FeedResponse expectedResponse;
-    private StatusDAO mockFeedDAO;
+    private FeedDAO mockFeedDAO;
     private FeedServiceImpl feedServiceImplSpy;
 
     @BeforeEach
@@ -47,11 +48,11 @@ class FeedServiceImplTest
 
         // Setup a mock FeedDAO that will return known responses
         expectedResponse = new FeedResponse(Arrays.asList(stat1, stat2, stat3), false);
-        mockFeedDAO = Mockito.mock(StatusDAO.class);
+        mockFeedDAO = Mockito.mock(FeedDAO.class);
         Mockito.when(mockFeedDAO.getFeed(request)).thenReturn(expectedResponse);
 
         feedServiceImplSpy = Mockito.spy(FeedServiceImpl.class);
-        Mockito.when(feedServiceImplSpy.getStatusDAO()).thenReturn(mockFeedDAO);
+        Mockito.when(feedServiceImplSpy.getFeedDAO()).thenReturn(mockFeedDAO);
     }
 
     /**

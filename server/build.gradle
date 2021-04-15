@@ -12,6 +12,8 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
     implementation 'com.amazonaws:aws-java-sdk-dynamodb:1.11.986'
     implementation 'com.amazonaws:aws-java-sdk-core:1.11.969'
+    implementation 'com.amazonaws:aws-java-sdk-sqs:1.11.761'
+    implementation 'com.google.code.gson:gson:2.8.6'
 }
 test{
     useJUnitPlatform()

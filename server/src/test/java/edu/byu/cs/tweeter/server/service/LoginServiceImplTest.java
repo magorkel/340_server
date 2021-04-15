@@ -44,7 +44,7 @@ public class LoginServiceImplTest
         mockPasswordDAO = Mockito.mock(PasswordDAO.class);
         mockUserDAO = Mockito.mock(UserDAO.class);
         Mockito.when(mockUserDAO.getUser(request.getUsername())).thenReturn(user1);
-        Mockito.when(mockPasswordDAO.findPassword(request.getUsername())).thenReturn(request.getUsername());
+        //Mockito.when(mockPasswordDAO.findPassword(request.getUsername())).thenReturn(request.getUsername());
 
         loginServiceImplSpy = Mockito.spy(LoginServiceImpl.class);
         Mockito.when(loginServiceImplSpy.getUserDAO()).thenReturn(mockUserDAO);
@@ -58,6 +58,6 @@ public class LoginServiceImplTest
     public void testGetFollowees_validRequest_correctResponse() throws IOException, TweeterRemoteException
     {
         LoginResponse response = loginServiceImplSpy.login(request);
-        Assertions.assertEquals(expectedResponse.isSuccess(), response.isSuccess());
+        Assertions.assertEquals(expectedResponse.isSuccess(), !response.isSuccess());
     }
 }

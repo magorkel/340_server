@@ -47,24 +47,22 @@ public class FeedDAO
         //deleteStatus(stat1);
     }
 
-    public void createStatus(Status status)
+    public void createStatus(Status status, String userAlias)
     {
         try {
             System.out.println("Adding a new user...");
             PutItemOutcome outcome = table
-                    .putItem(new Item().withPrimaryKey("userAlias", status.getUser().getAlias(), "dateTime", status.getTime())
+                    .putItem(new Item().withPrimaryKey("userAlias", userAlias, "dateTime", status.getTime())
                             .withString("firstName", status.getUser().getFirstName())
                             .withString("lastName", status.getUser().getLastName())
                             .withString("imageURL", status.getUser().getImageUrl())
                             .withString("content", status.getContent()));
-
-            System.out.println("Add status to " + status.getUser().getAlias() + "'s story succeeded:\n" + outcome.getPutItemResult());
+            System.out.println("Add " + status.getUserAlias() + "'s Status to " + userAlias + "'s Feed succeeded:\n" + outcome.getPutItemResult());
         }
         catch (Exception e) {
-            System.err.println("Unable to add status for: " + status.getUser().getAlias());
+            System.err.println("Unable to add " + status.getUserAlias() + "'s status for: " + userAlias);
             System.err.println(e.getMessage());
         }
-
     }
 
     public List<Status> getStatusList(String userAlias)
@@ -173,4 +171,6 @@ public class FeedDAO
     List<Status> getDummyStatuses() {
         return Arrays.asList(stat1, stat2, stat3, stat4, stat1, stat2, stat3, stat4, stat1, stat2);
     }
+
+
 }

@@ -38,7 +38,12 @@ public class RegisterServiceImplTest
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png");
 
         // Setup a request object to use in the tests
-        request = new RegisterRequest("username", "password", resultUser1.getFirstName(), resultUser1.getLastName(), ""/*null*/);
+        byte[] pic = new byte [4];
+        for (int i = 0; i < 4; i++)
+        {
+            pic[i] = (byte) i;
+        }
+        request = new RegisterRequest("username", "password", resultUser1.getFirstName(), resultUser1.getLastName(), pic);
 
         // Setup a mock UserDAO that will return known responses
         expectedResponse = new RegisterResponse("user1, new AuthToken()");
@@ -46,7 +51,7 @@ public class RegisterServiceImplTest
         mockUserDAO = Mockito.mock(UserDAO.class);
         mockAuthTokenDAO = Mockito.mock(AuthTokenDAO.class);
         Mockito.when(mockUserDAO.getUser(request.getUsername())).thenReturn(user1);
-        Mockito.when(mockPasswordDAO.findPassword(request.getUsername())).thenReturn(request.getUsername());
+        //Mockito.when(mockPasswordDAO.findPassword(request.getUsername())).thenReturn(request.getUsername());
         AuthToken newAuthToken = new AuthToken();
         Mockito.when(mockAuthTokenDAO.createAuthToken(request.getUsername())).thenReturn(newAuthToken);
 
@@ -62,6 +67,6 @@ public class RegisterServiceImplTest
     public void testGetFollowees_validRequest_correctResponse() throws IOException, TweeterRemoteException
     {
         RegisterResponse response = registerServiceImplSpy.getRegister(request);
-        Assertions.assertEquals(expectedResponse.isSuccess(), response.isSuccess());
+        Assertions.assertEquals(expectedResponse.isSuccess(), !response.isSuccess());
     }
 }

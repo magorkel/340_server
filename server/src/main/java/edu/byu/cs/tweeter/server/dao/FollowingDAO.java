@@ -200,7 +200,7 @@ public class FollowingDAO {
                 user19, user20);
     }
 
-    List<User> getFollowersFromDB(String followeeAlias)
+    public List<User> getFollowersFromDB(String followeeAlias)
     {
         List<String> followers = getFollowersList(followeeAlias);
         //use followees to get list of users from DB

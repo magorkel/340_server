@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.*;
 
-import edu.byu.cs.tweeter.BuildConfig;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.Story;
@@ -165,82 +164,13 @@ public class ServerFacade {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public RegisterResponse register(RegisterRequest request) throws IOException, TweeterRemoteException
     {
-        //This one will check all usernames and make sure yours is not taken before returning.
-        /*ArrayList taken = new ArrayList<String> ();
-        taken.add("freddyJ");
-        taken.add("daphneB");
-        taken.add("velmaD");
-        taken.add("scoobyD");
-        boolean unique = true;
-        for (int i = 0; i < taken.size(); i++) {
-            if (request.getUsername().equals(taken.get(i))) {
-                unique = false;
-            }
-        }
-        if (unique) {
-            /*ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            Bitmap bmp = request.getImageBytes();
-            bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            byte[] byteArray = stream.toByteArray();
-
-            ByteArrayInputStream bs = new ByteArrayInputStream(byteArray);
-
-            String newBitmap = Base64.getEncoder().encodeToString(byteArray);
-            bmp.recycle();*/
-
-            //avatar.recycle();
-
-            //send to s3, get url back, send url instead of image
-            // Create AmazonS3 object for doing S3 operations
-
-            //ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            //bmp.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
-            //byte[] bitmapdata = bos.toByteArray();
-
-            /*AmazonS3Client s3 = (AmazonS3Client) AmazonS3ClientBuilder.defaultClient();
-
-
-            AmazonS3 s3 = AmazonS3ClientBuilder
-                    .standard()
-                    .withRegion("us-west-2")
-                    .build();
-            // Write code to do the following:
-            // 1. get name of file to be copied from the command line
-            // 2. get name of S3 bucket from the command line
-            // 3. upload file to the specified S3 bucket using the file name as the S3 key
-            PutObjectRequest objectRequest = new PutObjectRequest("bitmaptostringurl", request.getUsername() + "Image.png", bs, new ObjectMetadata()).withCannedAcl(CannedAccessControlList.PublicRead);
-            ;
-            s3.putObject(objectRequest);
-            //PutObjectRequest(java.lang.String bucketName,
-            //                        java.lang.String key,
-            //                        java.io.InputStream input,
-            //                        ObjectMetadata metadata)
-
-            //s3.putObject("bitmaptostringurl", bs, "Upload bitmap");
-
-            String url = s3.getResourceUrl("bitmaptostringurl", request.getUsername()+"Image.png");*/
-            /*User user = new User(request.getFirstName(), request.getLastName(), "@" + request.getFirstName() + request.getLastName(),
-                    request.getImage()/*newBitmap*///);//decode back into a bitearray and then do all that above
-            /*return new RegisterResponse(user, new AuthToken());
-        }
-        else {
-            return new RegisterResponse("Error, Username taken");
-        }*/
         String urlPath = "/getregister";
-        //String imageURL = new String(request.getImage());
-        String imageURL = "";
-        RegisterRequest newRequest = new RegisterRequest(request.getUsername(), request.getPassword(), request.getFirstName(), request.getLastName(), imageURL);
+        RegisterRequest newRequest = new RegisterRequest(request.getUsername(), request.getPassword(), request.getFirstName(), request.getLastName(), request.getImage());//imageURL);
         RegisterResponse response = clientCommunicator.doPost(urlPath, newRequest, null, RegisterResponse.class);
         if(response.isSuccess()) {
-            //FIXME save in s3 bucket in server
-            response.getUser().setImageBytes(request.getImage());
-            response.getUser().setImageUrl("");
             return response;
-        } else {
-            return response;
-            //throw new RuntimeException(response.getMessage());
         }
-
+        else return null;
     }
 
     public MakeFollowResponse updateFollowServer(MakeFollowRequest request) throws IOException, TweeterRemoteException
